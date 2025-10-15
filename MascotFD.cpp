@@ -49,10 +49,11 @@ void MascotFD::addEdge(VertexID src, VertexID dst)
     ui sampleNum = edgeToIndex.size();
     samples[0][sampleNum] = src;
     samples[1][sampleNum] = dst;
+    //std::cout << "Adding Edge .... : " << sampleNum << std::endl;
     KeyID key = ((KeyID)src * std::numeric_limits<unsigned int>::max()) + dst;
 
     edgeToIndex.emplace(key, sampleNum);
-    if (srcToDsts.find(key) == srcToDsts.end())
+    if (srcToDsts.find(src) == srcToDsts.end())
     {
         std::unordered_set<VertexID> dst_set;
         srcToDsts.emplace(src, dst_set);
@@ -67,6 +68,8 @@ void MascotFD::addEdge(VertexID src, VertexID dst)
     }
     itr = srcToDsts.find(dst);
     (itr->second).insert(src);
+    //std::cout << "Adding Edge Finished : " << sampleNum << std::endl;
+
 }
 
 void MascotFD::deleteEdge(VertexID src, VertexID dst)

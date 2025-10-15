@@ -26,6 +26,10 @@ public:
         k = memory_budget;
         p = sample_probability;
         lower_bound = lowerbound;
+        samples = new ui* [2];
+        for (ui i = 0; i < 2; i++){
+            samples[i] = new ui[k];
+        }
     }
 
     ~MascotFD() {

@@ -116,6 +116,20 @@ void Graph::loadGraphFromFile(const std::string& file_path){
 }
 
 
+long long Graph::alt_count_exact_triangle(){
+
+    long long exact_count = 0;
+    ui set_intersection_length = 0;
+
+    for(ui i = 0; i < edge_list.size(); i++){
+        set_intersection_length = get_nbr_set_intersection_count(edge_list[i].first, edge_list[i].second);
+        exact_count += set_intersection_length;
+    }
+
+    return (exact_count/3);
+}
+
+
 long long Graph::count_exact_triangle(){
 
     long long exact_count = 0;
@@ -129,7 +143,7 @@ long long Graph::count_exact_triangle(){
         }
     }
 
-    return (exact_count/3);
+    return (exact_count/18);
 
 }
 

@@ -11,14 +11,16 @@
 #include "TriestFD.hpp"
 
 
-void get_metric(long long exact_count, double approximated_count){
+void get_metric(long long exact_count, double approximated_count, ui serial){
 
-    double accuracy = 0.0;
+    double error = 0.0;
     double avg_elapsed_time = 0;
 
-    accuracy = (double) ((exact_count - approximated_count)) / exact_count;    
+    error = (double) ((exact_count - approximated_count)) / exact_count;    
 
-    std::cout << "Accuracy : " << accuracy << std::endl;     
+    std::cout << "Exact Count : " << exact_count << std::endl;
+    std::cout << "Approximated Count : " << approximated_count << std::endl;
+    std::cout << "Error : " << error << std::endl;     
 }
 
 
@@ -74,6 +76,8 @@ void loadGraphByStreamForMascot(const std::string& file_path, MascotFD*& module,
 
     ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
 
+    std::cout << "Ignoring the comments... " << std::endl;
+
     while(infile >> begin) {
 
         infile >> end;
@@ -84,10 +88,15 @@ void loadGraphByStreamForMascot(const std::string& file_path, MascotFD*& module,
         interval_counter++;
 
         if(interval_counter >= interval){
-            
-            exact_triangle_cnt = data_graph->count_exact_triangle();
 
-            get_metric(exact_triangle_cnt, module->getGlobalTriangle());
+            trial_counter++;
+            
+            //exact_triangle_cnt = data_graph->count_exact_triangle();
+            exact_triangle_cnt = data_graph->alt_count_exact_triangle();
+
+            std::cout << "Trial : " << trial_counter << "  Exact Number of Triangles : " << exact_triangle_cnt << std::endl;
+
+            get_metric(exact_triangle_cnt, module->getGlobalTriangle(), trial_counter);
 
             interval_counter = 0;
             
@@ -129,7 +138,7 @@ void loadGraphByStreamForTriest(const std::string& file_path, TriestFD*& module,
 
     VertexID begin, end;
 
-    ui approximated_count = 0, interval_counter = 0;
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
 
     while(infile >> begin) {
 
@@ -141,10 +150,14 @@ void loadGraphByStreamForTriest(const std::string& file_path, TriestFD*& module,
         interval_counter++;
 
         if(interval_counter >= interval){
-            
-            exact_triangle_cnt = data_graph->count_exact_triangle();
 
-            get_metric(exact_triangle_cnt, module->getGlobalTriangle());
+            trial_counter++;
+
+            exact_triangle_cnt = data_graph->alt_count_exact_triangle();
+
+            std::cout << "Trial : " << trial_counter << "  Exact Number of Triangles : " << exact_triangle_cnt << std::endl;
+
+            get_metric(exact_triangle_cnt, module->getGlobalTriangle(), trial_counter);
 
             interval_counter = 0;
         }
@@ -186,7 +199,7 @@ void loadGraphByStreamForThinkD(const std::string& file_path, ThinkDFD*& module,
 
     VertexID begin, end;
 
-    ui approximated_count = 0, interval_counter = 0;
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
 
     while(infile >> begin) {
 
@@ -198,9 +211,12 @@ void loadGraphByStreamForThinkD(const std::string& file_path, ThinkDFD*& module,
         interval_counter++;
 
         if(interval_counter >= interval){
+
+            trial_counter++;
+
             exact_triangle_cnt = data_graph->count_exact_triangle();
 
-            get_metric(exact_triangle_cnt, module->getGlobalTriangle());
+            get_metric(exact_triangle_cnt, module->getGlobalTriangle(), trial_counter);
 
             interval_counter = 0;
         }
@@ -215,55 +231,54 @@ void loadGraphByStreamForThinkD(const std::string& file_path, ThinkDFD*& module,
 
 
 //TriestFD
-/*int main(int argc, char** argv){
+int main(int argc, char** argv){
 
-    std::string input_data_graph_file = "/home/antu/Research_Projects/dataset/com-amazon.ungraph.txt";
+    std::string input_data_graph_file = "/home/kars1/Parallel_computation/dataset/com-amazon.ungraph.txt";
 
-    ui memory_budget;
-    double sample_probability = 0.3;
+    ui memory_budget = 65536;
     bool lowerbound = true;
+    ui interval = 1000;
 
     Graph* data_graph = new Graph();
 
     TriestFD* module = new TriestFD(memory_budget, lowerbound);
-
-    loadGraphByStreamForTriest(input_data_graph_file, module, data_graph);
-}*/
+    loadGraphByStreamForTriest(input_data_graph_file, module, data_graph, interval);
+}
 
 
 //MascotFD
 /*int main(int argc, char** argv){
 
-    std::string input_data_graph_file = "/home/antu/Research_Projects/dataset/com-amazon.ungraph.txt";
+    std::string input_data_graph_file = "/home/kars1/Parallel_computation/dataset/com-amazon.ungraph.txt";
 
-    ui memory_budget;
-    double sample_probability = 0.3;
+    ui memory_budget = 65536;
+    double sample_probability = 0.05;
     bool lowerbound = true;
+    ui interval = 1000;
 
     Graph* data_graph = new Graph();
 
     MascotFD* module = new MascotFD(memory_budget, sample_probability, lowerbound);
-
-    loadGraphByStreamForMascot(input_data_graph_file, module, data_graph);
+    loadGraphByStreamForMascot(input_data_graph_file, module, data_graph, interval);
 }*/
 
 
 //ThinkDFD
 /*int main(int argc, char** argv){
 
-    std::string input_data_graph_file = "/home/antu/Research_Projects/dataset/com-amazon.ungraph.txt";
+    std::string input_data_graph_file = "/home/kars1/Parallel_computation/dataset/com-amazon.ungraph.txt";
 
-    ui memory_budget;
-    bool lowerbound = true;    
+    ui memory_budget = 65536;
+    bool lowerbound = true;
+    ui interval = 1000;    
 
     Graph* data_graph = new Graph();
 
     ThinkDFD* module = new ThinkDFD(memory_budget, lowerbound);
-
-    loadGraphByStreamForThinkD(input_data_graph_file, module, data_graph);
+    loadGraphByStreamForThinkD(input_data_graph_file, module, data_graph, interval);
 }*/
 
-
+/*
 int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
@@ -295,5 +310,7 @@ int main(int argc, char** argv){
         loadGraphByStreamForThinkD(input_data_graph_file, module, data_graph, interval);        
     }
 }
+
+*/
 
 

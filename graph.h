@@ -20,6 +20,7 @@ private:
     VertexID * neighbors;
 
     std::unordered_map<VertexID, std::set<VertexID>> adj_list;
+    std::vector<std::pair<VertexID, VertexID>> edge_list;
 
 public:
 
@@ -43,6 +44,7 @@ public:
     void printGraphMetaData();
     void printGraphDegreeData();
     long long count_exact_triangle();
+    long long alt_count_exact_triangle();
     long long count_exact_butterfly();
     long long count_exact_square();
 
@@ -105,6 +107,8 @@ public:
 
 
     void add_edge(VertexID u, VertexID v) {
+
+        edge_list.push_back(std::make_pair(u, v));
         
         if(adj_list.find(u) == adj_list.end()){
             std::set<VertexID> u_nbr;

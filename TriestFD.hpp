@@ -28,6 +28,10 @@ public:
 
         k = memory_budget;
         lowerBound = lower_bound;
+        samples = new ui* [2];
+        for (ui i = 0; i < 2; i++){
+            samples[i] = new ui[k];
+        }
     }
 
     ~TriestFD() {

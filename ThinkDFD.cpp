@@ -96,7 +96,7 @@ void ThinkDFD::addEdge(VertexID src, VertexID dst)
     KeyID key = ((KeyID)src * std::numeric_limits<unsigned int>::max()) + dst;
 
     edgeToIndex.emplace(key, sampleNum);
-    if (srcToDsts.find(key) == srcToDsts.end())
+    if (srcToDsts.find(src) == srcToDsts.end())
     {
         std::unordered_set<VertexID> dst_set;
         srcToDsts.emplace(src, dst_set);
