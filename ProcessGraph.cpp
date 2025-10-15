@@ -10,177 +10,209 @@
 #include "ThinkDFD.hpp"
 #include "TriestFD.hpp"
 
-void loadGraphByStreamForMascot(const std::string& file_path, MascotFD*& module, Graph*& data_graph){
 
-    std::ifstream infile(file_path);
+void get_metric(long long exact_count, double approximated_count){
 
-    if (!infile.is_open()) {
-        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
-        exit(-1);
-    }
+    double accuracy = 0.0;
+    double avg_elapsed_time = 0;
 
-    char type;
-    std::string input_line;
-    ui label = 0;
+    accuracy = (double) ((exact_count - approximated_count)) / exact_count;    
 
-    std::cout << "Reading File............ " << std::endl;
-
-    ui line_count = 0, count = 0, comment_line_count = 4;
-
-    while (std::getline(infile, input_line)) {
-
-        line_count++;
-
-        if(line_count >= comment_line_count){
-            break;
-        }
-    }
-
-    VertexID begin, end;
-
-    ui approximated_count = 0, interval = 10, interval_counter = 0;
-
-    while(infile >> begin) {
-
-        infile >> end;
-        module-> processEdge(begin, end, true);
-        data_graph->add_edge(begin, end);
-
-        
-        interval_counter++;
-
-        if(interval_counter >= interval){
-            
-            interval_counter = 0;
-        }
-    }
-
-    infile.close();
-
-    std::ifstream input_file(file_path);
-
-}
-
-void loadGraphByStreamForTriest(const std::string& file_path, TriestFD*& module, Graph*& data_graph){
-
-    std::ifstream infile(file_path);
-
-    if (!infile.is_open()) {
-        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
-        exit(-1);
-    }
-
-    char type;
-    std::string input_line;
-    ui label = 0;
-
-    std::cout << "Reading File............ " << std::endl;
-
-    ui line_count = 0, count = 0, comment_line_count = 4;
-
-    while (std::getline(infile, input_line)) {
-
-        line_count++;
-
-        if(line_count >= comment_line_count){
-            break;
-        }
-    }
-
-    VertexID begin, end;
-
-    ui approximated_count = 0, interval = 10, interval_counter = 0;
-
-    while(infile >> begin) {
-
-        infile >> end;
-        module-> processEdge(begin, end, true);
-        data_graph->add_edge(begin, end);
-
-        
-        interval_counter++;
-
-        if(interval_counter >= interval){
-            
-            interval_counter = 0;
-        }
-    }
-
-    infile.close();
-
-    std::ifstream input_file(file_path);
-
+    std::cout << "Accuracy : " << accuracy << std::endl;     
 }
 
 
-void loadGraphByStreamForThinkD(const std::string& file_path, ThinkDFD*& module, Graph*& data_graph){
 
-    std::ifstream infile(file_path);
-
-    if (!infile.is_open()) {
-        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
-        exit(-1);
-    }
-
-    char type;
-    std::string input_line;
-    ui label = 0;
-
-    std::cout << "Reading File............ " << std::endl;
-
-    ui line_count = 0, count = 0, comment_line_count = 4;
-
-    while (std::getline(infile, input_line)) {
-
-        line_count++;
-
-        if(line_count >= comment_line_count){
-            break;
-        }
-    }
-
-    VertexID begin, end;
-
-    ui approximated_count = 0, interval = 10, interval_counter = 0;
-
-    while(infile >> begin) {
-
-        infile >> end;
-        module-> processEdge(begin, end, true);
-        data_graph->add_edge(begin, end);
-
-        
-        interval_counter++;
-
-        if(interval_counter >= interval){
-            
-            interval_counter = 0;
-        }
-    }
-
-    infile.close();
-
-    std::ifstream input_file(file_path);
-
-}
-
-void get_metrics(long long exact_count, long long* approximated_count_array, double* elapsed_time_array, ui trial_count){
+void get_metrics(long long* exact_count_array, long long* approximated_count_array, double* elapsed_time_array, ui trial_count){
 
     double* accuracy_array = new double[trial_count];
     double avg_elapsed_time = 0;
 
     for(ui i = 0; i < trial_count; i++){
-        accuracy_array[i] = (double) (std::abs(exact_count - approximated_count_array[i])) / exact_count;
-        avg_elapsed_time = elapsed_time_array[i];
+        accuracy_array[i] = (double) (std::abs(exact_count_array[i] - approximated_count_array[i])) / exact_count_array[i];
+        //avg_elapsed_time += elapsed_time_array[i];
     }
 
     std::sort(accuracy_array, accuracy_array + trial_count);
     ui median_idx = trial_count / 2;
-    avg_elapsed_time = avg_elapsed_time / trial_count;
+    //avg_elapsed_time = avg_elapsed_time / trial_count;
 
     std::cout << "Accuracy : " << accuracy_array[median_idx] << std::endl;
-    std::cout << "Elapsed Time : " << avg_elapsed_time << std::endl;   
+    //std::cout << "Elapsed Time : " << avg_elapsed_time << std::endl;   
 }
+
+
+
+void loadGraphByStreamForMascot(const std::string& file_path, MascotFD*& module, Graph*& data_graph, ui interval){
+
+    std::ifstream infile(file_path);
+    long long exact_triangle_cnt = 0;
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    ui line_count = 0, count = 0, comment_line_count = 4;
+
+    while (std::getline(infile, input_line)) {
+
+        line_count++;
+
+        if(line_count >= comment_line_count){
+            break;
+        }
+    }
+
+    VertexID begin, end;
+
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        module-> processEdge(begin, end, true);
+        data_graph->add_edge(begin, end);
+
+        
+        interval_counter++;
+
+        if(interval_counter >= interval){
+            
+            exact_triangle_cnt = data_graph->count_exact_triangle();
+
+            get_metric(exact_triangle_cnt, module->getGlobalTriangle());
+
+            interval_counter = 0;
+            
+        }
+    }
+
+    infile.close();
+
+    std::ifstream input_file(file_path);
+
+}
+
+void loadGraphByStreamForTriest(const std::string& file_path, TriestFD*& module, Graph*& data_graph, ui interval){
+
+    std::ifstream infile(file_path);
+    long long exact_triangle_cnt = 0;
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    ui line_count = 0, count = 0, comment_line_count = 4;
+
+    while (std::getline(infile, input_line)) {
+
+        line_count++;
+
+        if(line_count >= comment_line_count){
+            break;
+        }
+    }
+
+    VertexID begin, end;
+
+    ui approximated_count = 0, interval_counter = 0;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        module-> processEdge(begin, end, true);
+        data_graph->add_edge(begin, end);
+
+        
+        interval_counter++;
+
+        if(interval_counter >= interval){
+            
+            exact_triangle_cnt = data_graph->count_exact_triangle();
+
+            get_metric(exact_triangle_cnt, module->getGlobalTriangle());
+
+            interval_counter = 0;
+        }
+    }
+
+    infile.close();
+
+    std::ifstream input_file(file_path);
+
+}
+
+
+void loadGraphByStreamForThinkD(const std::string& file_path, ThinkDFD*& module, Graph*& data_graph, ui interval){
+
+    std::ifstream infile(file_path);
+    long long exact_triangle_cnt = 0;
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    ui line_count = 0, count = 0, comment_line_count = 4;
+
+    while (std::getline(infile, input_line)) {
+
+        line_count++;
+
+        if(line_count >= comment_line_count){
+            break;
+        }
+    }
+
+    VertexID begin, end;
+
+    ui approximated_count = 0, interval_counter = 0;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        module-> processEdge(begin, end, true);
+        data_graph->add_edge(begin, end);
+
+        
+        interval_counter++;
+
+        if(interval_counter >= interval){
+            exact_triangle_cnt = data_graph->count_exact_triangle();
+
+            get_metric(exact_triangle_cnt, module->getGlobalTriangle());
+
+            interval_counter = 0;
+        }
+    }
+
+    infile.close();
+
+    std::ifstream input_file(file_path);
+}
+
+
+
 
 //TriestFD
 /*int main(int argc, char** argv){
@@ -244,6 +276,7 @@ int main(int argc, char** argv){
 
     ui memory_budget = std::stoi(memory_budget_str);;
     bool lowerbound = true;
+    ui interval = 1000;
 
     Graph* data_graph = new Graph();
 
@@ -251,15 +284,15 @@ int main(int argc, char** argv){
         double sample_probability = std::stod(sampling_prob_str);
 
         MascotFD* module = new MascotFD(memory_budget, sample_probability, lowerbound);
-        loadGraphByStreamForMascot(input_data_graph_file, module, data_graph);        
+        loadGraphByStreamForMascot(input_data_graph_file, module, data_graph, interval);        
     }else if(algorithm_serial == "2"){
         
         TriestFD* module = new TriestFD(memory_budget, lowerbound);
-        loadGraphByStreamForTriest(input_data_graph_file, module, data_graph);        
+        loadGraphByStreamForTriest(input_data_graph_file, module, data_graph, interval);        
     }else {
 
         ThinkDFD* module = new ThinkDFD(memory_budget, lowerbound);
-        loadGraphByStreamForThinkD(input_data_graph_file, module, data_graph);        
+        loadGraphByStreamForThinkD(input_data_graph_file, module, data_graph, interval);        
     }
 }
 
