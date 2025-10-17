@@ -41,15 +41,14 @@ void TriestFD::processEdge(VertexID src, VertexID dst, bool add)
     if (add)
     {
         // sample edge start
-        if (ng + nb == 0)
+        if ((ng + nb) == 0)
         {
             if (edgeToIndex.size() < k)
             {
                 addEdge(src, dst);
                 isSample = true;
-            }
-            else if (random_ratio < k)
-            {
+            }else if(random_ratio < k){
+                
                 std::mt19937_64 key_selection_eng(rd());
                 std::uniform_int_distribution<ui> uniform_key_dis(0, edgeToIndex.size() - 1);
                 ui index = uniform_key_dis(key_selection_eng);
@@ -106,6 +105,7 @@ void TriestFD::addEdge(VertexID src, VertexID dst)
     ui sampleNum = edgeToIndex.size();
     samples[0][sampleNum] = src;
     samples[1][sampleNum] = dst;
+    
     KeyID key = ((KeyID)src * std::numeric_limits<unsigned int>::max()) + dst;
 
     edgeToIndex.emplace(key, sampleNum);
@@ -132,29 +132,26 @@ void TriestFD::deleteEdge(VertexID src, VertexID dst)
     ui sampleNum = edgeToIndex.size(), index;
     KeyID key = ((KeyID)src * std::numeric_limits<unsigned int>::max()) + dst;
     std::unordered_map<KeyID, ui>::iterator edge_idx_itr = edgeToIndex.find(key);
-    if (edge_idx_itr != edgeToIndex.end())
-    {
-        index = edge_idx_itr->second;
-        edgeToIndex.erase(edge_idx_itr);
+    if (edge_idx_itr != edgeToIndex.end()){
+        index = edge_idx_itr->second;   
+        edgeToIndex.erase(key);
     }
 
     std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator itr = srcToDsts.find(src);
-    if (itr != srcToDsts.end())
-    {
+    if (itr != srcToDsts.end()){
         (itr->second).erase(dst);
         if ((itr->second).empty())
         {
-            srcToDsts.erase(itr);
+            srcToDsts.erase(src);
         }
     }
 
     itr = srcToDsts.find(dst);
-    if (itr != srcToDsts.end())
-    {
+    if (itr != srcToDsts.end()){
         (itr->second).erase(src);
         if ((itr->second).empty())
         {
-            srcToDsts.erase(itr);
+            srcToDsts.erase(dst);
         }
     }
 
@@ -162,7 +159,8 @@ void TriestFD::deleteEdge(VertexID src, VertexID dst)
     {
         int newSrc = samples[0][index] = samples[0][sampleNum - 1];
         int newDst = samples[1][index] = samples[1][sampleNum - 1];
-        long newKey = ((long)newSrc * std::numeric_limits<unsigned int>::max()) + newDst;
+        KeyID newKey = ((KeyID)newSrc * std::numeric_limits<unsigned int>::max()) + newDst;
+        edgeToIndex.erase(newKey);
         edgeToIndex.emplace(newKey, index);
     }
 }

@@ -155,8 +155,6 @@ void loadGraphByStreamForTriest(const std::string& file_path, TriestFD*& module,
 
             exact_triangle_cnt = data_graph->alt_count_exact_triangle();
 
-            std::cout << "Trial : " << trial_counter << "  Exact Number of Triangles : " << exact_triangle_cnt << std::endl;
-
             get_metric(exact_triangle_cnt, module->getGlobalTriangle(), trial_counter);
 
             interval_counter = 0;
@@ -214,7 +212,7 @@ void loadGraphByStreamForThinkD(const std::string& file_path, ThinkDFD*& module,
 
             trial_counter++;
 
-            exact_triangle_cnt = data_graph->count_exact_triangle();
+            exact_triangle_cnt = data_graph-> alt_count_exact_triangle();
 
             get_metric(exact_triangle_cnt, module->getGlobalTriangle(), trial_counter);
 

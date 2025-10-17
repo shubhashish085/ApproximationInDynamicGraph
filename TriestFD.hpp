@@ -26,6 +26,9 @@ public:
 
     TriestFD(ui memory_budget, bool lower_bound) {
 
+        s = 0;
+        nb = 0;
+        ng = 0;
         k = memory_budget;
         lowerBound = lower_bound;
         samples = new ui* [2];

@@ -34,6 +34,8 @@ void ThinkDFD::processEdge(VertexID src, VertexID dst, bool add)
         dst = temp;
     }
 
+    count_triangles(src, dst, add);
+
     bool isSample = false;
     if (add)
     {
@@ -43,7 +45,7 @@ void ThinkDFD::processEdge(VertexID src, VertexID dst, bool add)
             if (edgeToIndex.size() < k)
             {
                 addEdge(src, dst);
-                isSample = true;
+                
             }else if (random_ratio < k)
             {
                 std::mt19937_64 key_selection_eng(rd());
@@ -51,13 +53,13 @@ void ThinkDFD::processEdge(VertexID src, VertexID dst, bool add)
                 ui index = uniform_key_dis(key_selection_eng);
                 deleteEdge(samples[0][index], samples[1][index]); // remove a random edge from the samples
                 addEdge(src, dst);                                // store the sampled edge
-                isSample = true;
+                
             }
         }
         else if (random_compensation < nb){
             addEdge(src, dst); // store the sampled edge
             nb--;
-            isSample = true;
+            
         }
         else{
             ng--;
@@ -69,7 +71,7 @@ void ThinkDFD::processEdge(VertexID src, VertexID dst, bool add)
         if (edgeToIndex.find(key) != edgeToIndex.end()){
             deleteEdge(src, dst); // remove the edge from the samples
             nb++;
-            isSample = true;
+            
         }else{
             ng++;
         }
@@ -81,9 +83,8 @@ void ThinkDFD::processEdge(VertexID src, VertexID dst, bool add)
         s--;
     }
     
-    if (isSample){
-        count_triangles(src, dst, add); // count the added or deleted triangles
-    }
+         // count the added or deleted triangles
+    
     return;
 }
 
@@ -122,7 +123,7 @@ void ThinkDFD::deleteEdge(VertexID src, VertexID dst)
     if (edge_idx_itr != edgeToIndex.end())
     {
         index = edge_idx_itr->second;
-        edgeToIndex.erase(edge_idx_itr);
+        edgeToIndex.erase(key);
     }
 
     std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator itr = srcToDsts.find(src);
@@ -131,7 +132,7 @@ void ThinkDFD::deleteEdge(VertexID src, VertexID dst)
         (itr->second).erase(dst);
         if ((itr->second).empty())
         {
-            srcToDsts.erase(itr);
+            srcToDsts.erase(src);
         }
     }
 
@@ -141,7 +142,7 @@ void ThinkDFD::deleteEdge(VertexID src, VertexID dst)
         (itr->second).erase(src);
         if ((itr->second).empty())
         {
-            srcToDsts.erase(itr);
+            srcToDsts.erase(dst);
         }
     }
 
@@ -149,7 +150,8 @@ void ThinkDFD::deleteEdge(VertexID src, VertexID dst)
     {
         int newSrc = samples[0][index] = samples[0][sampleNum - 1];
         int newDst = samples[1][index] = samples[1][sampleNum - 1];
-        long newKey = ((long)newSrc * std::numeric_limits<unsigned int>::max()) + newDst;
+        KeyID newKey = ((KeyID)newSrc * std::numeric_limits<unsigned int>::max()) + newDst;
+        edgeToIndex.erase(newKey);
         edgeToIndex.emplace(newKey, index);
     }
 }
@@ -180,11 +182,12 @@ void ThinkDFD::count_triangles(VertexID src, VertexID dst, bool add)
         dst_itr = temp;
     }
 
-    double weight = std::max((s + nb + ng + 0.0) / k * (s + nb + ng - 1.0) / (k - 1.0), 1.0);
+    double y = std::min((double)( k * 1.0), (double)(s + nb + ng));
+    double weight = (s + nb + ng + 0.0) / y * (s + nb + ng - 1.0) / (y - 1.0);
 
     if (add)
     {
-        double count = 0;
+        double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
         std::unordered_set<VertexID> dst_set = dst_itr->second;
         std::unordered_map<VertexID, double>::iterator map_itr;
