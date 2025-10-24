@@ -5,6 +5,7 @@
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <limits>
 #include "types.h"
 
 class Graph{
@@ -21,6 +22,7 @@ private:
 
     std::unordered_map<VertexID, std::set<VertexID>> adj_list;
     std::vector<std::pair<VertexID, VertexID>> edge_list;
+    std::unordered_map<KeyID, int> edgeToIndex; 
 
 public:
 
@@ -109,7 +111,10 @@ public:
     void add_edge(VertexID u, VertexID v) {
 
         edge_list.push_back(std::make_pair(u, v));
-        
+        KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
+
+        edgeToIndex.emplace(key, edge_list.size() - 1);
+
         if(adj_list.find(u) == adj_list.end()){
             std::set<VertexID> u_nbr;
             u_nbr.insert(v);
@@ -118,7 +123,6 @@ public:
             adj_list[u].insert(v);
         }
 
-
         if(adj_list.find(v) == adj_list.end()){
             std::set<VertexID> v_nbr;
             v_nbr.insert(u);
@@ -126,6 +130,34 @@ public:
         }else{
             adj_list[v].insert(u);
         }
+    }
+
+    bool delete_edge(VertexID u, VertexID v){
+
+        std::set<VertexID> nbr_set;
+        KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
+
+        std::cout << "Deleting Edge : (" << u << "," << v << ")" << std::endl;
+        if(adj_list.find(u) != adj_list.end()){
+            nbr_set = adj_list[u];
+            nbr_set.erase(v);
+            if(nbr_set.empty()){
+                adj_list.erase(u);
+            }
+        }
+
+        std::cout << "Deleting Edge : (" << u << "," << v << ")" << std::endl;
+
+        if(adj_list.find(v) != adj_list.end()){
+            nbr_set = adj_list[v];
+            nbr_set.erase(u);
+            if(nbr_set.empty()){
+                adj_list.erase(v);
+            }
+        }
+
+        //edgeToIndex[key] = -1;
+        //std::cout << "Deleted ..." << std::endl;
     }
 
     ui get_nbr_set_intersection_count(VertexID u, VertexID v){

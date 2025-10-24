@@ -15,8 +15,8 @@ public:
     double globalTriangle = 0; // global triangle count
 
     long long s = 0; // number of current samples
-    ui nb = 0; // number of uncompensated deletions
-    ui ng = 0; // number of uncompensate deletions
+    int nb = 0; // number of uncompensated deletions
+    int ng = 0; // number of uncompensate deletions
 
     ui k; // maximum number of samples
     ui** samples; // sampled edges

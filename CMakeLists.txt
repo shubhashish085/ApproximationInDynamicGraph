@@ -22,6 +22,7 @@ set(APPROXIMATION_FILE_LIST
         graph.cpp
         graph.h
         ProcessGraph.cpp
+        ProcessDynamicGraph.cpp
         types.h)
 
 

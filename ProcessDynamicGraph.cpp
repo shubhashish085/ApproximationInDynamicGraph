@@ -65,8 +65,9 @@ void create_streaming_graph_from_file(const std::string& file_path, const std::s
 
     infile.close();
 
+    std::cout << "Edges Count : " << edge_list.size() << std::endl;
 
-    ui deletion_count = std::floor(edge_list.size() * deletion_count / 100);
+    ui deletion_count = std::floor(edge_list.size() * deletion_percentage / 100);
 
     create_uniform_random_deletion_indices(edge_list.size(), deletion_count, deletion_indices);
 
@@ -74,18 +75,19 @@ void create_streaming_graph_from_file(const std::string& file_path, const std::s
 
     bool* addition_sign_array = new bool[total_size];
 
-    ui start_idx = 0, end_idx = 0, idx = 0; 
+    ui start_idx = 0, end_idx, idx = 0;
+
+    std::cout << "Edges To Be Deleted : " << deletion_indices.size() << std::endl;
 
     for(ui deletion_idx : deletion_indices){
-        end_idx = deletion_idx;
-        
+        end_idx = deletion_idx;       
         for(ui i = start_idx; i <= end_idx; i++){
-            final_edge_list[idx] = edge_list[i];
+            final_edge_list.push_back(edge_list[i]);
             addition_sign_array[idx] = true;
             idx++;
         }
 
-        final_edge_list[idx] = edge_list[end_idx];
+        final_edge_list.push_back(edge_list[end_idx]);
         addition_sign_array[idx] = false;
         idx++;
         start_idx = end_idx + 1;
@@ -94,6 +96,8 @@ void create_streaming_graph_from_file(const std::string& file_path, const std::s
     std::ofstream outputfile;
     outputfile.open(output_file_path, std::ios::app);
     std::string addition = "+";
+
+    std::cout << "Writing Edges : " << final_edge_list.size() << " to output file" << std::endl;
 
     for (ui i = 0; i < final_edge_list.size(); i++){
 
@@ -114,3 +118,14 @@ void create_streaming_graph_from_file(const std::string& file_path, const std::s
     outputfile.flush();
     outputfile.close();
 }
+
+
+// Creating Streaming Graph 
+/*int main(int argc, char** argv){
+
+    std::string input_graph_file = "/home/kars1/Parallel_computation/dataset/com-youtube.ungraph.txt";
+    std::string output_graph_file = "com-youtube_stm_20d.ungraph.txt";
+
+    ui deletion_percentage = 20;
+    create_streaming_graph_from_file(input_graph_file, output_graph_file, deletion_percentage);
+}*/

@@ -193,7 +193,7 @@ void TriestFD::count_triangles(VertexID src, VertexID dst, bool add)
         dst_itr = temp;
     }
 
-    double weight = std::max((s + nb + ng + 0.0) / k * (s + nb + ng - 1.0) / (k - 1.0) * (s + nb + ng - 2.0) / (k - 2.0), 1.0);
+    double weight = std::max(((s + nb + ng + 0.0) / k * (s + nb + ng - 1.0) / (k - 1.0) * (s + nb + ng - 2.0) / (k - 2.0)), 1.0);
 
     if (add)
     {
@@ -240,6 +240,7 @@ void TriestFD::count_triangles(VertexID src, VertexID dst, bool add)
             }
 
             globalTriangle += weight_sum;
+            //std::cout << "Global Increased : " << globalTriangle << std::endl;
         }
     }
     else if (lowerBound)
@@ -303,6 +304,7 @@ void TriestFD::count_triangles(VertexID src, VertexID dst, bool add)
 
             globalTriangle -= weight_sum;            
             globalTriangle = std::max(0.0, globalTriangle); // lower bounding
+            //std::cout << "Global Decreased : " << globalTriangle << std::endl;
         }
     }
 
