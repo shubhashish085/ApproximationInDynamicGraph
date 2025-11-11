@@ -5,6 +5,7 @@
 #include <vector>
 #include <set>
 #include <algorithm>
+#include <limits>
 #include "types.h"
 
 class Graph{
@@ -21,14 +22,19 @@ private:
 
     std::unordered_map<VertexID, std::set<VertexID>> adj_list;
     std::vector<std::pair<VertexID, VertexID>> edge_list;
+    //std::unordered_map<KeyID, int> edgeToIndex; 
 
 public:
+
+    std::unordered_map<VertexID, ui> node_to_triangles; // local triangle counts
+    long long global_triangle_cnt = 0;
 
     Graph() {
 
         vertices_count = 0;
         edges_count = 0;
         max_degree = 0;
+        global_triangle_cnt = 0;
 
         offsets = NULL;
         neighbors = NULL;
@@ -47,6 +53,7 @@ public:
     long long alt_count_exact_triangle();
     long long count_exact_butterfly();
     long long count_exact_square();
+
 
 
     const ui* getOffsets() const {
@@ -109,7 +116,10 @@ public:
     void add_edge(VertexID u, VertexID v) {
 
         edge_list.push_back(std::make_pair(u, v));
-        
+        KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
+
+        //edgeToIndex.emplace(key, edge_list.size() - 1);
+
         if(adj_list.find(u) == adj_list.end()){
             std::set<VertexID> u_nbr;
             u_nbr.insert(v);
@@ -118,7 +128,6 @@ public:
             adj_list[u].insert(v);
         }
 
-
         if(adj_list.find(v) == adj_list.end()){
             std::set<VertexID> v_nbr;
             v_nbr.insert(u);
@@ -126,6 +135,39 @@ public:
         }else{
             adj_list[v].insert(u);
         }
+
+        ui set_intersection_length = get_nbr_set_intersection_count(u, v);
+        global_triangle_cnt += set_intersection_length;
+    }
+
+    bool delete_edge(VertexID u, VertexID v){
+
+        std::set<VertexID> nbr_set;
+
+        ui set_intersection_length = get_nbr_set_intersection_count(u, v);
+        global_triangle_cnt -= set_intersection_length;
+
+        if(adj_list.find(u) != adj_list.end()){
+            nbr_set = adj_list[u];
+            nbr_set.erase(v);
+            if(nbr_set.empty()){
+                 adj_list.erase(u);
+            }
+        }
+
+        if(adj_list.find(v) != adj_list.end()){
+            nbr_set = adj_list[v];
+            nbr_set.erase(u);
+            if(nbr_set.empty()){
+                adj_list.erase(v);
+            }
+        }
+
+        return true;
+    }
+
+    long long get_global_triangle_count(){
+        return global_triangle_cnt;
     }
 
     ui get_nbr_set_intersection_count(VertexID u, VertexID v){
