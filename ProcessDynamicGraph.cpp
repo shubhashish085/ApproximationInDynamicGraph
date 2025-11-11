@@ -21,18 +21,25 @@ void create_uniform_random_deletion_indices(ui length, ui deletion_count, std::s
     }
 }
 
-void set_deletion_position(ui& position, ui start_idx, ui end_idx, bool* inserted){
+void set_deletion_position(ui& position, ui start_idx, ui end_idx, bool*& inserted){
+
+
+    if(start_idx == end_idx){
+        position = start_idx;
+        return;
+    }
 
     std::random_device rd;
     std::mt19937 generator(rd());
 
     std::uniform_int_distribution<> distribution(start_idx, end_idx);
 
-    int pos_index;
+    int pos_index = -1;
 
     while(true){
 
         pos_index = distribution(generator);
+        std::cout << "start idx : " << start_idx << " end index : " << end_idx << std::endl;
         if(!inserted[pos_index]){
             position = pos_index;
             break;
@@ -184,19 +191,24 @@ void create_streaming_graph_with_random_deletion(const std::string& file_path, c
 
     infile.close();
 
+    std::cout << "Edges Count : " << edge_list.size() << std::endl;
 
-    ui deletion_count = std::floor(edge_list.size() * deletion_count / 100);
+    ui deletion_count = std::floor(edge_list.size() * deletion_percentage / 100);
 
     create_uniform_random_deletion_indices(edge_list.size(), deletion_count, deletion_indices);
 
     ui total_size = edge_list.size() + deletion_indices.size();
+
+    final_edge_list.reserve(total_size);
 
     bool* addition_sign_array = new bool[total_size];
     bool* inserted = new bool[total_size];
 
     std::memset(inserted, false, total_size);
 
-    ui start_idx = 0, end_idx = 0, idx = 0, deletion_position; 
+    ui start_idx = 0, end_idx, idx = 0, deletion_position;
+
+    std::cout << "Edges To Be Deleted : " << deletion_indices.size() << std::endl; 
 
     for(ui deletion_idx : deletion_indices){
         end_idx = deletion_idx;
@@ -206,9 +218,9 @@ void create_streaming_graph_with_random_deletion(const std::string& file_path, c
         }
 
         ui i = start_idx;
-        while (i <= end_idx)
+        while ((i <= end_idx) && (idx < total_size))
         {
-            if(!inserted){
+            if(!inserted[idx]){
                 final_edge_list[idx] = edge_list[i];
                 addition_sign_array[idx] = true;
                 inserted[idx] = true;
@@ -220,19 +232,25 @@ void create_streaming_graph_with_random_deletion(const std::string& file_path, c
         }
 
 
-        set_deletion_position(deletion_position, idx, total_size - 1, inserted);
-        final_edge_list[deletion_position] = edge_list[end_idx];
-        addition_sign_array[deletion_position] = false;
-        inserted[deletion_position] = true;
+        if(idx <= total_size - 1){
+
+            set_deletion_position(deletion_position, idx, total_size - 1, inserted);
+            final_edge_list[deletion_position] = edge_list[end_idx];
+            addition_sign_array[deletion_position] = false;
+            inserted[deletion_position] = true;
+
+        }
         
         start_idx = end_idx + 1;
     }
+
+    std::cout << "Writing to the file ...  " << total_size << " edges."<< std::endl;
 
     std::ofstream outputfile;
     outputfile.open(output_file_path, std::ios::app);
     std::string addition = "+";
 
-    for (ui i = 0; i < final_edge_list.size(); i++){
+    for (ui i = 0; i < total_size; i++){
 
         if(addition_sign_array[i]){
             addition = "+";
@@ -254,12 +272,12 @@ void create_streaming_graph_with_random_deletion(const std::string& file_path, c
 
 
 // Creating Streaming Graph 
-/*int main(int argc, char** argv){
+int main(int argc, char** argv){
 
-    std::string input_graph_file = "/home/kars1/Parallel_computation/dataset/com-lj.ungraph.txt";
-    std::string output_graph_file = "com-lj_stm_20d.ungraph.txt";
+    std::string input_graph_file = "/home/antu/Research_Projects/dataset/com-amazon.ungraph.txt";
+    std::string output_graph_file = "com-amazon_stm_5d.ungraph.txt";
 
-    ui deletion_percentage = 20;
-    create_streaming_graph_from_file(input_graph_file, output_graph_file, deletion_percentage);
-}*/
+    ui deletion_percentage = 5;
+    create_streaming_graph_with_random_deletion(input_graph_file, output_graph_file, deletion_percentage);
+}
 
