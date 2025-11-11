@@ -1,4 +1,5 @@
 #include <fstream>
+#include <cstring>
 #include <vector>
 #include <random>
 #include <cmath>
@@ -17,6 +18,25 @@ void create_uniform_random_deletion_indices(ui length, ui deletion_count, std::s
 
     for (int i = 0; i < deletion_count; ++i) {
         random_indices.insert(distribution(generator));
+    }
+}
+
+void set_deletion_position(ui& position, ui start_idx, ui end_idx, bool* inserted){
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    std::uniform_int_distribution<> distribution(start_idx, end_idx);
+
+    int pos_index;
+
+    while(true){
+
+        pos_index = distribution(generator);
+        if(!inserted[pos_index]){
+            position = pos_index;
+            break;
+        }
     }
 }
 
@@ -88,6 +108,119 @@ void create_streaming_graph_from_file(const std::string& file_path, const std::s
         final_edge_list[idx] = edge_list[end_idx];
         addition_sign_array[idx] = false;
         idx++;
+        start_idx = end_idx + 1;
+    }
+
+    std::ofstream outputfile;
+    outputfile.open(output_file_path, std::ios::app);
+    std::string addition = "+";
+
+    for (ui i = 0; i < final_edge_list.size(); i++){
+
+        if(addition_sign_array[i]){
+            addition = "+";
+        }else{
+            addition = "-";
+        }
+
+        outputfile << final_edge_list[i].first << "  " <<  final_edge_list[i].second << "  " <<  addition << std::endl;
+
+        if(i % 1000 == 0){
+            outputfile.flush();
+        }
+
+    }
+
+    outputfile.flush();
+    outputfile.close();
+}
+
+
+void create_streaming_graph_with_random_deletion(const std::string& file_path, const std::string& output_file_path, ui deletion_percentage){
+
+    std::ifstream infile(file_path);
+    std::vector<std::pair<VertexID, VertexID>> edge_list;
+    std::vector<std::pair<VertexID, VertexID>> final_edge_list;
+    std::set<ui> deletion_indices;
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    ui line_count = 0, count = 0, comment_line_count = 4;
+
+    while (std::getline(infile, input_line)) {
+
+        line_count++;
+
+        if(line_count >= comment_line_count){
+            break;
+        }
+    }
+
+    VertexID begin, end;
+
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+
+    double max_error = 0.0, min_error = 30.0;
+
+    std::cout << "Ignoring the comments... " << std::endl;
+
+    while(infile >> begin) {
+
+        infile >> end;        
+        edge_list.push_back(std::make_pair(begin, end));
+    }
+
+    infile.close();
+
+
+    ui deletion_count = std::floor(edge_list.size() * deletion_count / 100);
+
+    create_uniform_random_deletion_indices(edge_list.size(), deletion_count, deletion_indices);
+
+    ui total_size = edge_list.size() + deletion_indices.size();
+
+    bool* addition_sign_array = new bool[total_size];
+    bool* inserted = new bool[total_size];
+
+    std::memset(inserted, false, total_size);
+
+    ui start_idx = 0, end_idx = 0, idx = 0, deletion_position; 
+
+    for(ui deletion_idx : deletion_indices){
+        end_idx = deletion_idx;
+
+        if(idx >= total_size){
+            break;
+        }
+
+        ui i = start_idx;
+        while (i <= end_idx)
+        {
+            if(!inserted){
+                final_edge_list[idx] = edge_list[i];
+                addition_sign_array[idx] = true;
+                inserted[idx] = true;
+                idx++;
+                i++;
+            }else{
+                idx++;
+            }
+        }
+
+
+        set_deletion_position(deletion_position, idx, total_size - 1, inserted);
+        final_edge_list[deletion_position] = edge_list[end_idx];
+        addition_sign_array[deletion_position] = false;
+        inserted[deletion_position] = true;
+        
         start_idx = end_idx + 1;
     }
 
