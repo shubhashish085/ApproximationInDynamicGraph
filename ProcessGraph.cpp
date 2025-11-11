@@ -74,11 +74,11 @@ void loadFullyDynamicGraphStreamForMascot(const std::string& file_path, MascotFD
 
         if(addition == "-"){
             module-> processEdge(begin, end, false);
-            //data_graph->delete_edge(begin, end);
+            data_graph->delete_edge(begin, end);
 
         }else{
             module-> processEdge(begin, end, true);
-            //data_graph->add_edge(begin, end);
+            data_graph->add_edge(begin, end);
         }
 
         
@@ -86,27 +86,27 @@ void loadFullyDynamicGraphStreamForMascot(const std::string& file_path, MascotFD
 
         if(interval_counter >= interval){           
 
-            //exact_count[serial] = data_graph->alt_count_exact_triangle();
+            exact_count[serial] = data_graph->get_global_triangle_count();
 
             global_cnt[serial] = module->getGlobalTriangle();
 
-            std::cout << "Global Triangle Count : " << global_cnt[serial] << std::endl;
+            error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
 
-            //error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
+            //std::cout << "Error : " << error_array[serial] << std::endl;
 
-            /*if(max_error < error_array[serial]){
+            if(max_error < error_array[serial]){
                 max_error = error_array[serial];
             }
 
             if(min_error > error_array[serial]){
                 min_error = error_array[serial];
-            }*/
+            }
 
             interval_counter = 0;
             serial++;            
         }
     }
-
+    
     std::cout << "Maximum Error : " << max_error << std::endl;
     std::cout << "Minimum Error : " << min_error << std::endl;
 
@@ -114,7 +114,7 @@ void loadFullyDynamicGraphStreamForMascot(const std::string& file_path, MascotFD
 }
 
 
-void loadGraphByStreamForMascot(const std::string& file_path, MascotFD*& module, Graph*& data_graph, ui interval, 
+void loadIncrementalGraphByStreamForMascot(const std::string& file_path, MascotFD*& module, Graph*& data_graph, ui interval, 
                                 long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
 
     std::ifstream infile(file_path);
@@ -163,7 +163,7 @@ void loadGraphByStreamForMascot(const std::string& file_path, MascotFD*& module,
 
             trial_counter++;            
 
-            exact_count[serial] = data_graph->alt_count_exact_triangle();
+            exact_count[serial] = data_graph->get_global_triangle_count();
 
             global_cnt[serial] = module->getGlobalTriangle();
 
@@ -176,15 +176,6 @@ void loadGraphByStreamForMascot(const std::string& file_path, MascotFD*& module,
             if(min_error > error_array[serial]){
                 min_error = error_array[serial];
             }
-
-            //exact_triangle_cnt = data_graph->count_exact_triangle();
-            //exact_triangle_cnt = data_graph->alt_count_exact_triangle();
-
-            //error = (double) ((exact_triangle_cnt - module->getGlobalTriangle())) / exact_triangle_cnt;
-
-            //std::cout << "Trial : " << trial_counter << "  Exact Number of Triangles : " << exact_triangle_cnt << std::endl;
-
-            //get_metric(exact_triangle_cnt, module->getGlobalTriangle(), trial_counter);
 
             interval_counter = 0;
             serial++;            
@@ -230,42 +221,39 @@ void loadFullyDynamicGraphByStreamForTriest(const std::string& file_path, Triest
 
         if(addition == "-"){
             module-> processEdge(begin, end, false);
-            //data_graph->delete_edge(begin, end);
+            data_graph->delete_edge(begin, end);
 
         }else{
             module-> processEdge(begin, end, true);
-            //data_graph->add_edge(begin, end);
+            data_graph->add_edge(begin, end);
         }
         
         interval_counter++;
 
         if(interval_counter >= interval){
              
-            //exact_count[serial] = data_graph->alt_count_exact_triangle();
+            exact_count[serial] = data_graph->get_global_triangle_count();
 
             global_cnt[serial] = module->getGlobalTriangle();
 
-            //std::cout << "Global Triangle Count : " << global_cnt[serial] << std::endl;
-
-            //error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
+            error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
             
+            //std::cout << "Error  : " << error_array[serial] << std::endl;
 
-            /*if(max_error < error_array[serial]){
+            if(max_error < error_array[serial]){
                 max_error = error_array[serial];
             }
 
             if(min_error > error_array[serial]){
                 min_error = error_array[serial];
-            }*/
+            }
 
             interval_counter = 0;
-            serial++;
-
-            
+            serial++;            
         }
     }
 
-    std::cout << "Final Triangle : " << module->getGlobalTriangle() << std::endl;
+    
 
     std::cout << "Maximum Error : " << max_error << std::endl;
     std::cout << "Minimum Error : " << min_error << std::endl;
@@ -323,13 +311,11 @@ void loadIncrementalGraphByStreamForTriest(const std::string& file_path, TriestF
 
             trial_counter++;
              
-            //exact_count[serial] = data_graph->alt_count_exact_triangle();
+            exact_count[serial] = data_graph->get_global_triangle_count();
 
             global_cnt[serial] = module->getGlobalTriangle();
 
-            std::cout << "Global Triangle Count : " << global_cnt[serial] << std::endl;
-
-            //error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
+            error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
             
 
             if(max_error < error_array[serial]){
@@ -382,11 +368,11 @@ void loadFullyDynamicGraphStreamForThinkD(const std::string& file_path, ThinkDFD
 
         if(addition == "-"){
             module-> processEdge(begin, end, false);
-            //data_graph->delete_edge(begin, end);
+            data_graph->delete_edge(begin, end);
 
         }else{
             module-> processEdge(begin, end, true);
-            //data_graph->add_edge(begin, end);
+            data_graph->add_edge(begin, end);
         }
 
         
@@ -394,11 +380,13 @@ void loadFullyDynamicGraphStreamForThinkD(const std::string& file_path, ThinkDFD
 
         if(interval_counter >= interval){
 
-            //exact_count[serial] = data_graph->alt_count_exact_triangle();
+            exact_count[serial] = data_graph->get_global_triangle_count();
 
             global_cnt[serial] = module->getGlobalTriangle();
 
-            /*error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
+            error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
+
+            //std::cout << "Error : " << error_array[serial] << std::endl;
 
             if(max_error < error_array[serial]){
                 max_error = error_array[serial];
@@ -406,7 +394,7 @@ void loadFullyDynamicGraphStreamForThinkD(const std::string& file_path, ThinkDFD
 
             if(min_error > error_array[serial]){
                 min_error = error_array[serial];
-            }*/
+            }
 
             interval_counter = 0;
             serial++;
@@ -467,7 +455,7 @@ void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDF
 
             trial_counter++;
 
-            exact_count[serial] = data_graph->alt_count_exact_triangle();
+            exact_count[serial] = data_graph->get_global_triangle_count();
 
             global_cnt[serial] = module->getGlobalTriangle();
 
@@ -480,10 +468,6 @@ void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDF
             if(min_error > error_array[serial]){
                 min_error = error_array[serial];
             }
-
-            //exact_triangle_cnt = data_graph-> alt_count_exact_triangle();
-
-            //get_metric(exact_triangle_cnt, module->getGlobalTriangle(), trial_counter);
 
             interval_counter = 0;
             serial++;
@@ -513,6 +497,12 @@ void write_into_output_file(std::string output_file_path, long long* exact_cnt_a
         }
 
     }
+
+    std::sort(error, error + serial_cnt);
+    int median_idx = serial_cnt / 2;
+
+    std::cout << "Median Error : " << error[median_idx] << std::endl;
+    std::cout << "-----------------------------------" << std::endl; 
 
     outputfile.flush();
     outputfile.close();
@@ -553,7 +543,7 @@ void print_details(std::string input_graph_file, std::string algorithm_serial, s
 
 
 //MascotFD
-int main(int argc, char** argv){
+/*int main(int argc, char** argv){
 
     //std::string input_data_graph_file = "/home/kars1/Parallel_computation/dataset/com-amazon.ungraph.txt";
     std::string input_data_graph_file = "./com-amazon_stm_5d.ungraph.txt";
@@ -575,7 +565,7 @@ int main(int argc, char** argv){
     MascotFD* module = new MascotFD(memory_budget, sample_probability, lowerbound);
     //loadGraphByStreamForMascot(input_data_graph_file, module, data_graph, interval);
     loadFullyDynamicGraphStreamForMascot(input_data_graph_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
-}
+}*/
 
 
 //ThinkDFD
@@ -648,7 +638,7 @@ int main(int argc, char** argv){
 }*/
 
 // Fully Dynamic Setting
-/*int main(int argc, char** argv){
+int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
     
@@ -688,8 +678,7 @@ int main(int argc, char** argv){
 
     print_details(input_data_graph_file, algorithm_serial, memory_budget_str, interval);
     write_into_output_file(output_file, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
-}*/
-
+}
 
 
 

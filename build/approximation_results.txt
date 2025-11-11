@@ -1,0 +1,608 @@
+AMAZON
+---------------------------
+---------------------------
+
+Reading File............ 
+Maximum Error : 7.41137
+Minimum Error : 0
+Input File : ./com-amazon_stm_5d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 3.42591
+-----------------------------------
+Reading File............ 
+Maximum Error : 14.7928
+Minimum Error : 0
+Input File : ./com-amazon_stm_5d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 7.51053
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 100
+Minimum Error : 1.68425e-14
+Input File : ./com-amazon_stm_5d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 6.11145e-309
+-----------------------------------
+
+Reading File............ 
+Maximum Error : 11.6656
+Minimum Error : 0
+Input File : ./com-amazon_stm_10d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 9.124
+-----------------------------------
+Reading File............ 
+Maximum Error : 15.4696
+Minimum Error : 0
+Input File : ./com-amazon_stm_10d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 7.91203
+
+
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 100
+Minimum Error : 0.0788851
+Input File : ./com-amazon_stm_10d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 6.60609e-309
+
+-----------------------------------
+Reading File............ 
+Maximum Error : 16.5065
+Minimum Error : 0
+Input File : ./com-amazon_stm_15d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 12.7894
+-----------------------------------
+Reading File............ 
+Maximum Error : 20.4858
+Minimum Error : 0
+Input File : ./com-amazon_stm_15d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 11.8585026   0-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 100
+Minimum Error : 1.13687e-14
+Input File : ./com-amazon_stm_15d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 7.22013e-309
+-----------------------------------
+
+Reading File............ 
+Maximum Error : 21.3051
+Minimum Error : 0
+Input File : ./com-amazon_stm_20d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 16.1136
+-----------------------------------
+Reading File............ 
+Maximum Error : 21.6605
+Minimum Error : 0
+Input File : ./com-amazon_stm_20d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 17.6113
+-----------------------------------
+
+DBLP
+-------------------------
+-------------------------
+
+Reading File............ 
+Maximum Error : 8.92857
+Minimum Error : 3.89264
+Input File : ./com-dblp_stm_5d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 6.25247
+-----------------------------------
+Reading File............ 
+Maximum Error : 9.69257
+Minimum Error : 4.20506
+Input File : ./com-dblp_stm_5d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 6.70711
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 60.1594
+Minimum Error : 0.00534731
+Input File : ./com-dblp_stm_5d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 3.52922e-309
+-----------------------------------
+Reading File............ 
+Maximum Error : 15.9344
+Minimum Error : 6.67557
+Input File : ./com-dblp_stm_10d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 12.8845
+-----------------------------------
+Reading File............ 
+Maximum Error : 15.6839
+Minimum Error : 6.67557
+Input File : ./com-dblp_stm_10d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 12.906
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 100
+Minimum Error : 3.50877
+Input File : ./com-dblp_stm_10d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 3.89452e-309
+-----------------------------------
+Reading File............ 
+Maximum Error : 21.1775
+Minimum Error : 10.7784
+Input File : ./com-dblp_stm_15d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 19.508
+-----------------------------------
+Reading File............ 
+Maximum Error : 26.7974
+Minimum Error : 10.978
+Input File : ./com-dblp_stm_15d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 20.7099
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 59.6806
+Minimum Error : 3.09278
+Input File : ./com-dblp_stm_15d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 4.16747e-309
+-----------------------------------
+Reading File............ 
+Maximum Error : 29.2341
+Minimum Error : 7.21649
+Input File : ./com-dblp_stm_20d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 25.9875
+-----------------------------------
+Reading File............ 
+Maximum Error : 33.2649
+Minimum Error : 7.21649
+Input File : ./com-dblp_stm_20d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 26.4354
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 61.2403
+Minimum Error : 3.09278
+Input File : ./com-dblp_stm_20d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 4.68159e-309
+-----------------------------------
+
+Youtube (65536)
+------------------------------
+------------------------------
+
+Reading File............ 
+Maximum Error : 13.7433
+Minimum Error : 0.757576
+Input File : ./com-youtube_stm_5d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 7.17913
+-----------------------------------
+Reading File............ 
+Maximum Error : 15.5194
+Minimum Error : 0.757576
+Input File : ./com-youtube_stm_5d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 9.53932
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 100
+Minimum Error : 9.30476
+Input File : ./com-youtube_stm_5d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 12.2658
+-----------------------------------
+Reading File............ 
+Maximum Error : 18.9893
+Minimum Error : 0
+Input File : ./com-youtube_stm_10d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 16.7515
+-----------------------------------
+Reading File............ 
+Maximum Error : 22.7946
+Minimum Error : 0
+Input File : ./com-youtube_stm_10d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 13.9653
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 129.885
+Minimum Error : 1.85891
+Input File : ./com-youtube_stm_10d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 2.33489e-308
+-----------------------------------
+Reading File............ 
+Maximum Error : 26.5826
+Minimum Error : 0
+Input File : ./com-youtube_stm_15d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 24.3785
+-----------------------------------
+Reading File............ 
+Maximum Error : 23.8969
+Minimum Error : 0
+Input File : ./com-youtube_stm_15d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 21.0966
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 100
+Minimum Error : 5.90015
+Input File : ./com-youtube_stm_15d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 65536
+Interval : 1000
+Median Error : 1.62461e-308
+-----------------------------------
+Reading File............ 
+Maximum Error : 29.88
+Minimum Error : 0
+Input File : ./com-youtube_stm_20d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 28.1753
+-----------------------------------
+Reading File............ 
+Maximum Error : 40.1038
+Minimum Error : 0
+Input File : ./com-youtube_stm_20d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 32.1986
+-----------------------------------
+
+Youtube (131072)
+------------------------------
+------------------------------
+
+Reading File............ 
+Maximum Error : 14.2632
+Minimum Error : 0.757576
+Input File : ./com-youtube_stm_5d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 7.9452
+-----------------------------------
+Reading File............ 
+Maximum Error : 11.1987
+Minimum Error : 0.757576
+Input File : ./com-youtube_stm_5d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 7.95787
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Maximum Error : 365.116
+Minimum Error : 0.199128
+Input File : ./com-youtube_stm_5d.ungraph.txt
+Algorithm Serial : 1
+Memory Budget : 131072
+Interval : 1000
+Median Error : 2.01174e-308
+-----------------------------------
+Reading File............ 
+Maximum Error : 17.6791
+Minimum Error : 0
+Input File : ./com-youtube_stm_10d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 14.8776
+-----------------------------------
+Reading File............ 
+Maximum Error : 16.6187
+Minimum Error : 0
+Input File : ./com-youtube_stm_10d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 12.103
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 25.5128
+Minimum Error : 3.40909
+Input File : ./com-youtube_stm_15d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 23.7115
+-----------------------------------
+Reading File............ 
+Maximum Error : 24.3852
+Minimum Error : 0
+Input File : ./com-youtube_stm_15d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 20.898
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 30.4503
+Minimum Error : 0
+Input File : ./com-youtube_stm_20d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 28.3003
+-----------------------------------
+Reading File............ 
+Maximum Error : 33.1599
+Minimum Error : 0
+Input File : ./com-youtube_stm_20d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 31.3405
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+
+--------------------------
+--------------------------
+
+Livejournal (131072)
+--------------------------
+--------------------------
+
+Reading File............ 
+Maximum Error : 10.3226
+Minimum Error : 0
+Input File : ./com-lj_stm_5d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 8.6005
+-----------------------------------
+Reading File............ 
+Maximum Error : 42.8628
+Minimum Error : 0
+Input File : ./com-lj_stm_5d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 17.5561
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 24.5614
+Minimum Error : 0
+Input File : ./com-lj_stm_10d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 16.1099
+-----------------------------------
+Reading File............ 
+Maximum Error : 51.4422
+Minimum Error : 0
+Input File : ./com-lj_stm_10d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 23.4925
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 84
+Minimum Error : 13.7971
+Input File : ./com-lj_stm_15d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 25.7509
+-----------------------------------
+Reading File............ 
+Maximum Error : 68
+Minimum Error : 0
+Input File : ./com-lj_stm_15d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 23.8973
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 34.1684
+Minimum Error : 0
+Input File : ./com-lj_stm_20d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 131072
+Interval : 1000
+Median Error : 32.892
+-----------------------------------
+Reading File............ 
+Maximum Error : 39.5878
+Minimum Error : 0
+Input File : ./com-lj_stm_20d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 131072
+Interval : 1000
+Median Error : 29.7426
+-----------------------------------
+
+Livejournal(65536)
+------------------------------
+------------------------------
+
+Reading File............ 
+Maximum Error : 11.4349
+Minimum Error : 0
+Input File : ./com-lj_stm_5d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 7.91214
+-----------------------------------
+Reading File............ 
+Maximum Error : 96.8412
+Minimum Error : 0
+Input File : ./com-lj_stm_5d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 14.8663
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 24.5614
+Minimum Error : 0
+Input File : ./com-lj_stm_10d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 17.8392
+-----------------------------------
+Reading File............ 
+Maximum Error : 54.2865
+Minimum Error : 0
+Input File : ./com-lj_stm_10d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 19.2758
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 68
+Minimum Error : 0
+Input File : ./com-lj_stm_15d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 25.6023
+-----------------------------------
+Reading File............ 
+Maximum Error : 84
+Minimum Error : 0.0379759
+Input File : ./com-lj_stm_15d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 22.8247
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)
+Reading File............ 
+Maximum Error : 35.4905
+Minimum Error : 0
+Input File : ./com-lj_stm_20d.ungraph.txt
+Algorithm Serial : 3
+Memory Budget : 65536
+Interval : 1000
+Median Error : 32.1093
+-----------------------------------
+Reading File............ 
+Maximum Error : 75.4271
+Minimum Error : 0
+Input File : ./com-lj_stm_20d.ungraph.txt
+Algorithm Serial : 2
+Memory Budget : 65536
+Interval : 1000
+Median Error : 33.3782
+-----------------------------------
+Reading File............ 
+Ignoring the comments... 
+Segmentation fault (core dumped)

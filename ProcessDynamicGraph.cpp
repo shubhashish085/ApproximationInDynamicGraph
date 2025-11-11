@@ -123,8 +123,8 @@ void create_streaming_graph_from_file(const std::string& file_path, const std::s
 // Creating Streaming Graph 
 /*int main(int argc, char** argv){
 
-    std::string input_graph_file = "/home/kars1/Parallel_computation/dataset/com-youtube.ungraph.txt";
-    std::string output_graph_file = "com-youtube_stm_20d.ungraph.txt";
+    std::string input_graph_file = "/home/kars1/Parallel_computation/dataset/com-lj.ungraph.txt";
+    std::string output_graph_file = "com-lj_stm_20d.ungraph.txt";
 
     ui deletion_percentage = 20;
     create_streaming_graph_from_file(input_graph_file, output_graph_file, deletion_percentage);
