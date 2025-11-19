@@ -407,6 +407,140 @@ void loadFullyDynamicGraphStreamForThinkD(const std::string& file_path, ThinkDFD
     infile.close();
 }
 
+void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path, ThinkDFD*& module, Graph*& data_graph, ui interval,
+                                    long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
+    
+    std::ifstream infile(file_path);
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    VertexID begin, end;
+    std::string addition;
+
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+
+    double max_error = 0.0, min_error = 30.0;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        infile >> addition;
+
+        if(addition == "-"){
+            module-> processEdgeSquare(begin, end, false);
+            data_graph->delete_edge_square(begin, end);
+
+        }else{
+            module-> processEdgeSquare(begin, end, true);
+            data_graph->add_edge_square(begin, end);
+        }
+
+        interval_counter++;
+
+        if(interval_counter >= interval){
+
+            exact_count[serial] = data_graph -> get_global_square_count();
+
+            global_cnt[serial] = module -> getGlobalSquare();
+
+            error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalSquare()) * 100.0) / exact_count[serial]);
+
+            if(max_error < error_array[serial]){
+                max_error = error_array[serial];
+            }
+
+            if(min_error > error_array[serial]){
+                min_error = error_array[serial];
+            }
+
+            interval_counter = 0;
+            serial++;
+        }
+    }
+
+    std::cout << "Maximum Error : " << max_error << std::endl;
+    std::cout << "Minimum Error : " << min_error << std::endl;
+
+    infile.close();
+}
+
+
+void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_path, ThinkDFD*& module, Graph*& data_graph, ui interval,
+                                    long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
+    
+    std::ifstream infile(file_path);
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    VertexID begin, end;
+    std::string addition;
+
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+
+    double max_error = 0.0, min_error = 30.0;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        infile >> addition;
+
+        if(addition == "-"){
+            module-> processEdgeButterfly(begin, end, false);
+            data_graph->delete_edge_butterfly(begin, end);
+
+        }else{
+            module-> processEdgeButterfly(begin, end, true);
+            data_graph->add_edge_butterfly(begin, end);
+        }
+
+        interval_counter++;
+
+        if(interval_counter >= interval){
+
+            exact_count[serial] = data_graph -> get_global_butterfly_count();
+
+            global_cnt[serial] = module -> getGlobalButterfly();
+
+            error_array[serial] = std::abs((double) ((exact_count[serial] - global_cnt[serial]) * 100.0) / exact_count[serial]);
+
+            if(max_error < error_array[serial]){
+                max_error = error_array[serial];
+            }
+
+            if(min_error > error_array[serial]){
+                min_error = error_array[serial];
+            }
+
+            interval_counter = 0;
+            serial++;
+        }
+    }
+
+    std::cout << "Maximum Error : " << max_error << std::endl;
+    std::cout << "Minimum Error : " << min_error << std::endl;
+
+    infile.close();
+}
+
+
 
 void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDFD*& module, Graph*& data_graph, ui interval,
                                     long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){

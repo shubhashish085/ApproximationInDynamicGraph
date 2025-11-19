@@ -28,6 +28,8 @@ public:
 
     std::unordered_map<VertexID, ui> node_to_triangles; // local triangle counts
     long long global_triangle_cnt = 0;
+    long long global_square_cnt = 0;
+    long long global_butterfly_cnt = 0;
 
     Graph() {
 
@@ -35,6 +37,8 @@ public:
         edges_count = 0;
         max_degree = 0;
         global_triangle_cnt = 0;
+        global_square_cnt = 0;
+        global_butterfly_cnt = 0;
 
         offsets = NULL;
         neighbors = NULL;
@@ -140,6 +144,62 @@ public:
         global_triangle_cnt += set_intersection_length;
     }
 
+    void add_edge_square(VertexID u, VertexID v){
+
+        edge_list.push_back(std::make_pair(u, v));
+        KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
+
+        //edgeToIndex.emplace(key, edge_list.size() - 1);
+
+        if(adj_list.find(u) == adj_list.end()){
+            std::set<VertexID> u_nbr;
+            u_nbr.insert(v);
+            adj_list.insert({u, u_nbr});
+        }else{
+            adj_list[u].insert(v);
+        }
+
+        if(adj_list.find(v) == adj_list.end()){
+            std::set<VertexID> v_nbr;
+            v_nbr.insert(u);
+            adj_list.insert({v, v_nbr});
+        }else{
+            adj_list[v].insert(u);
+        }
+
+        ui set_intersection_length = get_square_count(u, v);
+        global_square_cnt += set_intersection_length;
+    }
+
+    void add_edge_butterfly(VertexID u, VertexID v){
+
+        edge_list.push_back(std::make_pair(u, v));
+        KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
+
+        //edgeToIndex.emplace(key, edge_list.size() - 1);
+
+        if(adj_list.find(u) == adj_list.end()){
+            std::set<VertexID> u_nbr;
+            u_nbr.insert(v);
+            adj_list.insert({u, u_nbr});
+        }else{
+            adj_list[u].insert(v);
+        }
+
+        if(adj_list.find(v) == adj_list.end()){
+            std::set<VertexID> v_nbr;
+            v_nbr.insert(u);
+            adj_list.insert({v, v_nbr});
+        }else{
+            adj_list[v].insert(u);
+        }
+
+        ui set_intersection_length = get_butterfly_count(u, v);
+        global_butterfly_cnt += set_intersection_length;
+    }
+
+
+
     bool delete_edge(VertexID u, VertexID v){
 
         std::set<VertexID> nbr_set;
@@ -166,8 +226,119 @@ public:
         return true;
     }
 
+    bool delete_edge_square(VertexID u, VertexID v){
+
+        std::set<VertexID> nbr_set;
+        ui set_intersection_length = 0;
+
+        if(adj_list.find(u) != adj_list.end() && adj_list.find(v) != adj_list.end()){
+            set_intersection_length = get_square_count(u, v);
+        }
+
+        global_square_cnt -= set_intersection_length;
+
+        if(adj_list.find(u) != adj_list.end()){
+            nbr_set = adj_list[u];
+            nbr_set.erase(v);
+            if(nbr_set.empty()){
+                 adj_list.erase(u);
+            }
+        }
+
+        if(adj_list.find(v) != adj_list.end()){
+            nbr_set = adj_list[v];
+            nbr_set.erase(u);
+            if(nbr_set.empty()){
+                adj_list.erase(v);
+            }
+        }
+
+        return true;
+    }
+
+
+    bool delete_edge_butterfly(VertexID u, VertexID v){
+
+        std::set<VertexID> nbr_set;
+        ui set_intersection_length = 0;
+
+        if(adj_list.find(u) != adj_list.end() && adj_list.find(v) != adj_list.end()){
+            set_intersection_length = get_butterfly_count(u, v);
+        }
+
+        global_butterfly_cnt -= set_intersection_length;
+
+        if(adj_list.find(u) != adj_list.end()){
+            nbr_set = adj_list[u];
+            nbr_set.erase(v);
+            if(nbr_set.empty()){
+                adj_list.erase(u);
+            }
+        }
+
+        if(adj_list.find(v) != adj_list.end()){
+            nbr_set = adj_list[v];
+            nbr_set.erase(u);
+            if(nbr_set.empty()){
+                adj_list.erase(v);
+            }
+        }
+
+        return true;
+    }
+
+
     long long get_global_triangle_count(){
         return global_triangle_cnt;
+    }
+
+    long long get_global_square_count(){
+        return global_square_cnt;
+    }
+
+    long long get_global_butterfly_count(){
+        return global_butterfly_cnt;
+    }
+
+    ui get_square_count(VertexID u, VertexID v){
+
+        std::set<VertexID> two_hop_nbrs, intersection_set;
+
+        std::set<VertexID>::iterator itr, inner_itr;
+
+        for (itr = adj_list[u].begin(); itr != adj_list[u].end(); itr++) {
+            for(inner_itr = adj_list[*itr].begin(); inner_itr != adj_list[*itr].end(); inner_itr++){
+                if(*inner_itr != u){
+                    two_hop_nbrs.insert(*inner_itr);
+                }                
+            }
+        }
+
+        std::set_intersection(adj_list[v].begin(), adj_list[v].end(), two_hop_nbrs.begin(), two_hop_nbrs.end(), std::inserter(intersection_set, intersection_set.begin()));
+
+        ui intersection_set_size = (ui)(intersection_set.size());
+
+        return intersection_set_size;
+    }
+
+    ui get_butterfly_count(VertexID u, VertexID v){
+
+        std::set<VertexID> two_hop_nbrs, intersection_set;
+
+        std::set<VertexID>::iterator itr, inner_itr;
+
+        for (itr = adj_list[u].begin(); itr != adj_list[u].end(); itr++) {
+            for(inner_itr = adj_list[*itr].begin(); inner_itr != adj_list[*itr].end(); inner_itr++){
+                if(*inner_itr != u){
+                    two_hop_nbrs.insert(*inner_itr);
+                }                
+            }
+        }
+
+        std::set_intersection(adj_list[v].begin(), adj_list[v].end(), two_hop_nbrs.begin(), two_hop_nbrs.end(), std::inserter(intersection_set, intersection_set.begin()));
+        ui intersection_set_size = (ui)(intersection_set.size());
+
+        return intersection_set_size;        
     }
 
     ui get_nbr_set_intersection_count(VertexID u, VertexID v){

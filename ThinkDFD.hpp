@@ -12,7 +12,11 @@ public:
 
     std::unordered_map<VertexID, std::unordered_set<VertexID>> srcToDsts; // graph composed of the sampled edges
     std::unordered_map<VertexID, double> nodeToTriangles; // local triangle counts
+    std::unordered_map<VertexID, double> nodeToSquares; // local square counts
+    std::unordered_map<VertexID, double> nodeToButterflies; // local butterfly counts
     double globalTriangle = 0; // global triangle count
+    double globalSquare = 0; // global square count
+    double globalButterfly = 0; // global butterfly count
 
     long long s = 0; // number of current samples
     int nb = 0; // number of uncompensated deletions
@@ -47,11 +51,25 @@ public:
 
     void processEdge(VertexID src, VertexID dst, bool add);
 
+    void processEdgeSquare(VertexID src, VertexID dest, bool add);
+
+    void processEdgeButterfly(VertexID src, VertexID dest, bool add);
+
     void count_triangles(VertexID src, VertexID dst, bool add);
+
+    void count_squares(VertexID src, VertexID dst, bool add);
+
+    void count_butterfly(VertexID src, VertexID dst, bool add);
 
     double getGlobalTriangle();
 
+    double getGlobalSquare();
+
+    double getGlobalButterfly();
+
     std::unordered_map<VertexID, double> getLocalTriangle();
+
+    std::unordered_map<VertexID, double> getLocalSquare();
 };
 
 

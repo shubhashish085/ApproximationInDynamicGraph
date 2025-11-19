@@ -272,12 +272,12 @@ void create_streaming_graph_with_random_deletion(const std::string& file_path, c
 
 
 // Creating Streaming Graph 
-int main(int argc, char** argv){
+/*int main(int argc, char** argv){
 
     std::string input_graph_file = "/home/antu/Research_Projects/dataset/com-amazon.ungraph.txt";
     std::string output_graph_file = "com-amazon_stm_5d.ungraph.txt";
 
     ui deletion_percentage = 5;
     create_streaming_graph_with_random_deletion(input_graph_file, output_graph_file, deletion_percentage);
-}
+}*/
 
