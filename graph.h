@@ -147,7 +147,7 @@ public:
     void add_edge_square(VertexID u, VertexID v){
 
         edge_list.push_back(std::make_pair(u, v));
-        KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
+        //KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
 
         //edgeToIndex.emplace(key, edge_list.size() - 1);
 
@@ -174,7 +174,7 @@ public:
     void add_edge_butterfly(VertexID u, VertexID v){
 
         edge_list.push_back(std::make_pair(u, v));
-        KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
+        //KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
 
         //edgeToIndex.emplace(key, edge_list.size() - 1);
 

@@ -12,6 +12,41 @@
 #include "TriestFD.hpp"
 
 
+void write_into_output_file(std::string output_file_path, long long* exact_cnt_array, double* global_cnt, double* error, ui serial_cnt){
+
+
+    std::ofstream outputfile;
+    outputfile.open(output_file_path, std::ios::app);
+
+    outputfile << "Serial" << "  " << "Exact_Count" << "  " << "Global_Count" << "  " << "Error" << std::endl;
+
+    for (ui i = 0; i < serial_cnt; i++){
+        outputfile << i << "  " << exact_cnt_array[i] << "  " << global_cnt[i] << "  " << error[i] << std::endl;
+
+        if(i % 1000 == 0){
+            outputfile.flush();
+        }
+
+    }
+
+    std::sort(error, error + serial_cnt);
+    int median_idx = serial_cnt / 2;
+
+    std::cout << "Median Error : " << error[median_idx] << std::endl;
+    std::cout << "-----------------------------------" << std::endl; 
+
+    outputfile.flush();
+    outputfile.close();
+}
+
+void print_details(std::string input_graph_file, std::string algorithm_serial, std::string memory_budget, ui interval){
+
+    std::cout << "Input File : " << input_graph_file << std::endl;
+    std::cout << "Algorithm Serial : " << algorithm_serial << std::endl;
+    std::cout << "Memory Budget : " << memory_budget << std::endl;
+    std::cout << "Interval : " << interval << std::endl;
+}
+
 void get_metric(long long exact_count, double approximated_count, ui serial){
 
     double error = 0.0;
@@ -407,7 +442,7 @@ void loadFullyDynamicGraphStreamForThinkD(const std::string& file_path, ThinkDFD
     infile.close();
 }
 
-void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path, ThinkDFD*& module, Graph*& data_graph, ui interval,
+void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path, const std::string& output_file, ThinkDFD*& module, Graph*& data_graph, ui interval,
                                     long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
     
     std::ifstream infile(file_path);
@@ -471,10 +506,12 @@ void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path,
     std::cout << "Minimum Error : " << min_error << std::endl;
 
     infile.close();
+
+    write_into_output_file(output_file, exact_count, global_cnt, error_array, serial);
 }
 
 
-void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_path, ThinkDFD*& module, Graph*& data_graph, ui interval,
+void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_path, const std::string& output_file, ThinkDFD*& module, Graph*& data_graph, ui interval,
                                     long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
     
     std::ifstream infile(file_path);
@@ -538,6 +575,8 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
     std::cout << "Minimum Error : " << min_error << std::endl;
 
     infile.close();
+
+    write_into_output_file(output_file, exact_count, global_cnt, error_array, serial);
 }
 
 
@@ -615,40 +654,7 @@ void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDF
 }
 
 
-void write_into_output_file(std::string output_file_path, long long* exact_cnt_array, double* global_cnt, double* error, ui serial_cnt){
 
-
-    std::ofstream outputfile;
-    outputfile.open(output_file_path, std::ios::app);
-
-    outputfile << "Serial" << "  " << "Exact_Count" << "  " << "Global_Count" << "  " << "Error" << std::endl;
-
-    for (ui i = 0; i < serial_cnt; i++){
-        outputfile << i << "  " << exact_cnt_array[i] << "  " << global_cnt[i] << "  " << error[i] << std::endl;
-
-        if(i % 1000 == 0){
-            outputfile.flush();
-        }
-
-    }
-
-    std::sort(error, error + serial_cnt);
-    int median_idx = serial_cnt / 2;
-
-    std::cout << "Median Error : " << error[median_idx] << std::endl;
-    std::cout << "-----------------------------------" << std::endl; 
-
-    outputfile.flush();
-    outputfile.close();
-}
-
-void print_details(std::string input_graph_file, std::string algorithm_serial, std::string memory_budget, ui interval){
-
-    std::cout << "Input File : " << input_graph_file << std::endl;
-    std::cout << "Algorithm Serial : " << algorithm_serial << std::endl;
-    std::cout << "Memory Budget : " << memory_budget << std::endl;
-    std::cout << "Interval : " << interval << std::endl;
-}
 
 
 
@@ -772,7 +778,7 @@ void print_details(std::string input_graph_file, std::string algorithm_serial, s
 }*/
 
 // Fully Dynamic Setting
-int main(int argc, char** argv){
+/*int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
     
@@ -812,4 +818,33 @@ int main(int argc, char** argv){
 
     print_details(input_data_graph_file, algorithm_serial, memory_budget_str, interval);
     write_into_output_file(output_file, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
+}*/
+
+//For Square
+int main(int argc, char** argv){
+
+    //std::string input_data_graph_file = "/home/kars1/Parallel_computation/dataset/com-amazon.ungraph.txt";
+    //std::string input_data_graph_file = "./com-amazon_stm_5fd_l.ungraph.txt";
+    //std::string output_file = "./amazon_thinkd_stm_1000_5fdl_sq.txt";
+
+    std::string input_data_graph_file = "./com-youtube_stm_5fd_l.ungraph.txt";
+    std::string output_file = "./youtube_thinkd_stm_1000_5fdl_by.txt";
+
+    ui memory_budget = 65536;
+    bool lowerbound = true;
+    ui interval = 1000, serial_cnt = 0; 
+
+    ui max_array_limit = 100000;
+
+    long long* exact_cnt_array = new long long[max_array_limit];
+    double* global_cnt_array = new double[max_array_limit];
+    double* error_array = new double[max_array_limit];   
+
+    Graph* data_graph = new Graph();
+
+    ThinkDFD* module = new ThinkDFD(memory_budget, lowerbound);
+    //loadGraphByStreamForThinkD(input_data_graph_file, module, data_graph, interval);
+    //loadFullyDynamicGraphStreamForThinkD(input_data_graph_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
+    //countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
+    countButterflyForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
 }

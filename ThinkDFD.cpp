@@ -786,8 +786,8 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
         dst_itr = temp;
     }
 
-    double y = std::min((double)( k * 1.0), (double)(s + nb + ng));
-    double weight = (s + nb + ng + 0.0) / y * (s + nb + ng - 1.0) / (y - 1.0) * (s + nb + ng - 2.0) / (y - 2.0); 
+    //double y = std::min((double)( k * 1.0), (double)(s + nb + ng));
+    double weight = std::max((s + nb + ng + 0.0) / (k * 1.0) * (s + nb + ng - 1.0) / (k - 1.0) * (s + nb + ng - 2.0) / (k - 2.0), 1.0); 
 
     VertexID neighbor, two_hop_neighbor;
 
