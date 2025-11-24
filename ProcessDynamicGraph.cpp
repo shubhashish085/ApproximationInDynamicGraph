@@ -47,6 +47,64 @@ void set_deletion_position(ui& position, ui start_idx, ui end_idx, bool*& insert
     }
 }
 
+void reformat_streaming_graph_from_file(const std::string& file_path, const std::string& output_file_path){
+
+    std::vector<std::pair<VertexID, VertexID>> edge_list;
+    std::vector<bool> addition_vtr;
+    
+
+    std::ifstream infile(file_path);
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    ui line_count = 0, count = 0, comment_line_count = 4;
+
+    VertexID begin, end;
+    std::string addition;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        infile >> addition;        
+        edge_list.push_back(std::make_pair(begin, end));
+        if(addition == "-"){
+            addition_vtr.push_back(false);
+        }else{
+            addition_vtr.push_back(true);
+        }        
+    }
+
+    infile.close();
+
+    std::ofstream outputfile;
+    outputfile.open(output_file_path, std::ios::app);
+
+    for (ui i = 0; i < addition_vtr.size(); i++){
+
+        if(addition_vtr[i] == true){
+            outputfile << edge_list[i].first << "  " <<  edge_list[i].second << "  " << "1"  << std::endl;
+        }else{
+            outputfile << edge_list[i].first << "  " <<  edge_list[i].second << "  " <<  "-1" << std::endl;
+        }        
+
+        if(i % 1000 == 0){
+            outputfile.flush();
+        }
+
+    }
+
+    outputfile.flush();
+    outputfile.close();
+}
+
 
 void create_streaming_graph_from_file(const std::string& file_path, const std::string& output_file_path, ui deletion_percentage){
 
@@ -281,3 +339,11 @@ void create_streaming_graph_with_random_deletion(const std::string& file_path, c
     create_streaming_graph_with_random_deletion(input_graph_file, output_graph_file, deletion_percentage);
 }*/
 
+// Reformat Streaming Graph
+int main(int argc, char** argv){
+
+    std::string input_graph_file = "./com-amazon_stm_5fd_l.ungraph.txt";
+    std::string output_graph_file = "com-amazon_stm_5fd_l_abacus.ungraph.txt";
+
+    reformat_streaming_graph_from_file(input_graph_file, output_graph_file);
+}

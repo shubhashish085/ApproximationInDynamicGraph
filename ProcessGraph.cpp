@@ -821,7 +821,7 @@ void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDF
 }*/
 
 //For Square
-int main(int argc, char** argv){
+/*int main(int argc, char** argv){
 
     //std::string input_data_graph_file = "/home/kars1/Parallel_computation/dataset/com-amazon.ungraph.txt";
     //std::string input_data_graph_file = "./com-amazon_stm_5fd_l.ungraph.txt";
@@ -847,4 +847,4 @@ int main(int argc, char** argv){
     //loadFullyDynamicGraphStreamForThinkD(input_data_graph_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
     //countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
     countButterflyForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
-}
+}*/
