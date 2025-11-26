@@ -342,8 +342,8 @@ void create_streaming_graph_with_random_deletion(const std::string& file_path, c
 // Reformat Streaming Graph
 int main(int argc, char** argv){
 
-    std::string input_graph_file = "./com-amazon_stm_5fd_l.ungraph.txt";
-    std::string output_graph_file = "./com-amazon_stm_5fd_l_abacus.ungraph.txt";
+    std::string input_graph_file = "./com-orkut_stm_15fd_l.ungraph.txt";
+    std::string output_graph_file = "./com-orkut_stm_15fd_l_abacus.ungraph.txt";
 
     reformat_streaming_graph_from_file(input_graph_file, output_graph_file);
 }
