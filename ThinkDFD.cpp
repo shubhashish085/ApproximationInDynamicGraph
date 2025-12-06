@@ -175,13 +175,13 @@ void ThinkDFD::processEdgeButterfly(VertexID src, VertexID dst, bool add)
     }
 
     std::random_device rd;
-    std::mt19937_64 eng(rd());
-    std::uniform_int_distribution<int> dis(0, s);
-    std::mt19937_64 compensation_eng(rd());
+    std::mt19937 eng(rd());
+    
+    std::mt19937 compensation_eng(rd());
     std::uniform_int_distribution<int> compensation_dis(0, nb + ng);
     
-    double random_ratio = dis(eng);
-    double random_compensation = compensation_dis(compensation_eng);
+    int random_ratio;
+    int random_compensation = compensation_dis(compensation_eng);
 
     if (src > dst)
     {
@@ -195,6 +195,11 @@ void ThinkDFD::processEdgeButterfly(VertexID src, VertexID dst, bool add)
     bool isSample = false;
     if (add)
     {
+        s++;
+
+        std::uniform_int_distribution<int> dis(0, s);
+        random_ratio = dis(eng);
+
         // sample edge start
         if (ng + nb == 0)
         {
@@ -204,25 +209,24 @@ void ThinkDFD::processEdgeButterfly(VertexID src, VertexID dst, bool add)
                 
             }else if (random_ratio < k)
             {
-                std::mt19937_64 key_selection_eng(rd());
-                std::uniform_int_distribution<ui> uniform_key_dis(0, edgeToIndex.size() - 1);
+                std::mt19937 key_selection_eng(rd());
+                std::uniform_int_distribution<int> uniform_key_dis(0, edgeToIndex.size() - 1);
                 ui index = uniform_key_dis(key_selection_eng);
                 deleteEdge(samples[0][index], samples[1][index]); // remove a random edge from the samples
                 addEdge(src, dst);                                // store the sampled edge
                 
             }
-        }
-        else if (random_compensation < nb){
+        }else if (random_compensation < nb){
             addEdge(src, dst); // store the sampled edge
             nb--;
             
-        }
-        else{
+        }else{
             ng--;
         }
     }
     else
     {
+        s--;
         KeyID key = ((KeyID)src * std::numeric_limits<unsigned int>::max()) + dst;
         if (edgeToIndex.find(key) != edgeToIndex.end()){
             deleteEdge(src, dst); // remove the edge from the samples
@@ -233,14 +237,6 @@ void ThinkDFD::processEdgeButterfly(VertexID src, VertexID dst, bool add)
         }
     }
 
-    if (add){
-        s++;
-    }else{
-        s--;
-    }
-    
-         // count the added or deleted triangles
-    
     return;
 }
 

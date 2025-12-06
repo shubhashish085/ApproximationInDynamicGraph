@@ -515,6 +515,8 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
                                     long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
     
     std::ifstream infile(file_path);
+    std::ofstream outputfile;
+    outputfile.open(output_file, std::ios::app);
 
     if (!infile.is_open()) {
         std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
@@ -530,7 +532,7 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
     VertexID begin, end;
     std::string addition;
 
-    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0, step = 2000;
 
     double max_error = 0.0, min_error = 30.0;
 
@@ -541,22 +543,29 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
 
         if(addition == "-"){
             module-> processEdgeButterfly(begin, end, false);
-            data_graph->delete_edge_butterfly(begin, end);
+            //data_graph->delete_edge_butterfly(begin, end);
 
         }else{
             module-> processEdgeButterfly(begin, end, true);
-            data_graph->add_edge_butterfly(begin, end);
+            //data_graph->add_edge_butterfly(begin, end);
         }
 
         interval_counter++;
 
-        if(interval_counter >= interval){
+        if(interval_counter % step == 0){
 
-            exact_count[serial] = data_graph -> get_global_butterfly_count();
+            outputfile << interval_counter << "  " << module->getGlobalButterfly();
+            outputfile.flush();
+
+        }
+
+        /*if(interval_counter >= interval){
+
+            //exact_count[serial] = data_graph -> get_global_butterfly_count();
 
             global_cnt[serial] = module -> getGlobalButterfly();
 
-            error_array[serial] = std::abs((double) ((exact_count[serial] - global_cnt[serial]) * 100.0) / exact_count[serial]);
+            //error_array[serial] = std::abs((double) ((exact_count[serial] - global_cnt[serial]) * 100.0) / exact_count[serial]);
 
             if(max_error < error_array[serial]){
                 max_error = error_array[serial];
@@ -568,15 +577,16 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
 
             interval_counter = 0;
             serial++;
-        }
+        }*/
     }
 
     std::cout << "Maximum Error : " << max_error << std::endl;
     std::cout << "Minimum Error : " << min_error << std::endl;
 
     infile.close();
+    outputfile.close();
 
-    write_into_output_file(output_file, exact_count, global_cnt, error_array, serial);
+    //write_into_output_file(output_file, exact_count, global_cnt, error_array, serial);
 }
 
 
@@ -626,6 +636,60 @@ void printExactButterflyCount(const std::string& file_path, const std::string& o
     infile.close();
     outputfile.flush();
     outputfile.close();
+}
+
+void printErrorDetails(const std::string& input_file_1, const std::string& input_file_2){
+
+    std::ifstream infile1(input_file_1);
+    std::ifstream infile2(input_file_2);
+
+    std::vector<double> exact_cnt_vtr;
+    std::vector<double> approx_cnt_vtr;
+
+    if (!infile1.is_open()) {
+        std::cout << "Can not open the graph file " << input_file_1 << " ." << std::endl;
+        exit(-1);
+    }
+
+    if (!infile2.is_open()) {
+        std::cout << "Can not open the graph file " << input_file_2 << " ." << std::endl;
+        exit(-1);
+    }
+
+    ui counter = 0;
+
+    ui edge_counter_1, edge_counter_2;
+    double bfy_count_1, bfy_count_2; 
+
+    while(infile1 >> edge_counter_1){
+
+        infile1 >> bfy_count_1;
+
+        exact_cnt_vtr.push_back(bfy_count_1);
+
+        if(infile2 >> edge_counter_2){
+            infile2 >> bfy_count_2;
+            approx_cnt_vtr.push_back(bfy_count_2);
+        }
+    }
+
+    infile1.close();
+    infile2.close();
+
+    double error, max_error = 0.0, min_error = 30.0;
+
+    for(ui i = 0; i < exact_cnt_vtr.size(); i++){
+
+        error = std::abs((exact_cnt_vtr[i] - approx_cnt_vtr[i]) / exact_cnt_vtr[i]);
+
+        if(max_error < error){
+            max_error = error;
+        }
+
+        if(min_error > error){
+            min_error = error;
+        }
+    }
 }
 
 
