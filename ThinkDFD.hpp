@@ -61,6 +61,8 @@ public:
 
     void count_butterfly(VertexID src, VertexID dst, bool add);
 
+    void count_butterfly_with_removal(VertexID src, VertexID dst, bool add);
+
     double getGlobalTriangle();
 
     double getGlobalSquare();

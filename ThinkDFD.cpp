@@ -190,7 +190,9 @@ void ThinkDFD::processEdgeButterfly(VertexID src, VertexID dst, bool add)
         dst = temp;
     }
 
-    count_butterfly(src, dst, add);
+    //count_butterfly(src, dst, add);
+    count_butterfly_with_removal(src, dst, add);
+
 
     bool isSample = false;
     if (add)
@@ -560,7 +562,7 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
                     two_hop_neighbor = *two_hop_nbr_itr;
 
                     if (dst_set.find(two_hop_neighbor) != dst_set.end() && two_hop_neighbor != src){
-                        count += 1;
+                        count += 1.0;
                         map_itr = nodeToSquares.find(neighbor);
                         if(map_itr == nodeToSquares.end()){
                             nodeToSquares[neighbor] = weight;
@@ -606,7 +608,7 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
     else if (lowerBound)
     { // process the deletion with lower bounding
 
-        double count = 0;
+        double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
         std::unordered_set<VertexID> dst_set = dst_itr->second;
         std::unordered_map<VertexID, double>::iterator map_itr;
@@ -655,7 +657,7 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
         }
 
 
-        if (count > 0)
+        if (count > 0.0)
         {
             double weight_sum = count * weight;
 
@@ -782,8 +784,11 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
         dst_itr = temp;
     }
 
+    double y = std::min((double)( k * 1.0), (double)(s + nb + ng));
+    double weight = (s + nb + ng + 0.0) / y * (s + nb + ng - 1.0) / (y - 1.0) * (s + nb + ng - 2.0) / (y - 2.0); 
+
     //double y = std::min((double)( k * 1.0), (double)(s + nb + ng));
-    double weight = std::max((s + nb + ng + 0.0) / (k * 1.0) * (s + nb + ng - 1.0) / (k - 1.0) * (s + nb + ng - 2.0) / (k - 2.0), 1.0); 
+    //double weight = std::max((s + nb + ng + 0.0) / (k * 1.0) * (s + nb + ng - 1.0) / (k - 1.0) * (s + nb + ng - 2.0) / (k - 2.0), 1.0); 
 
     VertexID neighbor, two_hop_neighbor;
 
@@ -808,7 +813,7 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
                     two_hop_neighbor = *two_hop_nbr_itr;
 
                     if (dst_set.find(two_hop_neighbor) != dst_set.end() && two_hop_neighbor != src){
-                        count += 1;
+                        count += 1.0;
                         map_itr = nodeToButterflies.find(neighbor);
                         if(map_itr == nodeToButterflies.end()){
                             nodeToButterflies[neighbor] = weight;
@@ -824,13 +829,12 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
                         }
                     }
                 }
-
             }
 
             itr++;
         }
 
-        if (count > 0)
+        if (count > 0.0)
         {
             double weight_sum = count * weight;
 
@@ -854,7 +858,7 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
     else if (lowerBound)
     { // process the deletion with lower bounding
 
-        double count = 0;
+        double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
         std::unordered_set<VertexID> dst_set = dst_itr->second;
         std::unordered_map<VertexID, double>::iterator map_itr;
@@ -873,7 +877,7 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
                     two_hop_neighbor = *two_hop_nbr_itr;
 
                     if (dst_set.find(two_hop_neighbor) != dst_set.end() && two_hop_neighbor != src){
-                        count += 1;
+                        count += 1.0;
                         map_itr = nodeToButterflies.find(neighbor);
                         if(map_itr == nodeToButterflies.end()){
                             nodeToButterflies[neighbor] = -weight;
@@ -903,7 +907,7 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
         }
 
 
-        if (count > 0)
+        if (count > 0.0)
         {
             double weight_sum = count * weight;
 
@@ -933,14 +937,14 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
             }
 
             globalButterfly -= weight_sum;            
-            globalButterfly = std::max(0.0, globalSquare); // lower bounding
+            globalButterfly = std::max(0.0, globalButterfly); // lower bounding
         }
     }
 
     else
     { // process the deletion without lower bounding
 
-        double count = 0;
+        double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
         std::unordered_set<VertexID> dst_set = dst_itr->second;
         std::unordered_map<VertexID, double>::iterator map_itr;
@@ -988,7 +992,269 @@ void ThinkDFD::count_butterfly(VertexID src, VertexID dst, bool add)
             itr++;
         }
 
-        if (count > 0)
+        if (count > 0.0)
+        {
+            double weight_sum = count * weight;
+
+            map_itr = nodeToButterflies.find(src);
+            if(map_itr == nodeToButterflies.end()){
+                nodeToButterflies[src] = -weight_sum;
+            }else{
+                nodeToButterflies[src] = nodeToButterflies[src] - weight_sum; 
+            }
+
+            map_itr = nodeToButterflies.find(dst);
+            if(map_itr == nodeToButterflies.end()){
+                nodeToButterflies[dst] = -weight_sum;
+            }else{
+                nodeToButterflies[dst] = nodeToButterflies[dst] - weight_sum; 
+            }
+
+            globalButterfly -= weight_sum;
+        }
+    }
+}
+
+
+void ThinkDFD::count_butterfly_with_removal(VertexID src, VertexID dst, bool add)
+{
+
+    // if this edge has a new node, there cannot be any triangles
+    if (srcToDsts.find(src) == srcToDsts.end() || srcToDsts.find(dst) == srcToDsts.end()){
+        return;
+    }
+
+    std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator src_itr = srcToDsts.find(src);
+    std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator dst_itr = srcToDsts.find(dst);
+
+    /*if ((src_itr->second).size() > (dst_itr->second).size())
+    {
+        std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator temp = src_itr;
+        src_itr = dst_itr;
+        dst_itr = temp;
+    }*/
+
+    double y = std::min((double)( k * 1.0), (double)(s + nb + ng));
+    double weight = (s + nb + ng + 0.0) / y * (s + nb + ng - 1.0) / (y - 1.0) * (s + nb + ng - 2.0) / (y - 2.0); 
+
+    //double y = std::min((double)( k * 1.0), (double)(s + nb + ng));
+    //double weight = std::max((s + nb + ng + 0.0) / (k * 1.0) * (s + nb + ng - 1.0) / (k - 1.0) * (s + nb + ng - 2.0) / (k - 2.0), 1.0); 
+
+    VertexID neighbor, two_hop_neighbor;
+
+    if (add)
+    {
+        double count = 0.0;
+        std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
+        std::unordered_set<VertexID> dst_set = dst_itr->second;
+        std::unordered_set<VertexID> src_set = src_itr->second;
+        dst_set.erase(src);
+        src_set.erase(dst);
+
+        std::unordered_map<VertexID, double>::iterator map_itr;
+        std::unordered_map<VertexID, double>::iterator two_hop_map_itr;
+        std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator two_hop_itr;
+        std::unordered_set<VertexID>::iterator two_hop_nbr_itr;
+
+
+        while (itr != (src_itr->second).end())
+        {
+            neighbor = *itr;
+            two_hop_itr = srcToDsts.find(neighbor);
+
+            if(neighbor != dst){
+                for(two_hop_nbr_itr = (two_hop_itr->second).begin(); two_hop_nbr_itr != (two_hop_itr->second).end(); two_hop_nbr_itr++){
+                    two_hop_neighbor = *two_hop_nbr_itr;
+
+                    if (dst_set.find(two_hop_neighbor) != dst_set.end() && two_hop_neighbor != src){
+                        count += 1.0;
+                        map_itr = nodeToButterflies.find(neighbor);
+                        if(map_itr == nodeToButterflies.end()){
+                            nodeToButterflies[neighbor] = weight;
+                        }else{
+                            nodeToButterflies[neighbor] = nodeToButterflies[neighbor] + weight; 
+                        }
+
+                        two_hop_map_itr = nodeToButterflies.find(two_hop_neighbor);
+                        if(two_hop_map_itr == nodeToButterflies.end()){
+                            nodeToButterflies[two_hop_neighbor] = weight;
+                        }else{
+                            nodeToButterflies[two_hop_neighbor] = nodeToButterflies[two_hop_neighbor] + weight; 
+                        }
+                    }
+                }
+            }
+
+            itr++;
+        }
+
+        if (count > 0.0)
+        {
+            double weight_sum = count * weight;
+
+            map_itr = nodeToButterflies.find(src);
+            if(map_itr == nodeToButterflies.end()){
+                nodeToButterflies[src] = weight_sum;
+            }else{
+                nodeToButterflies[src] = nodeToButterflies[src] + weight_sum; 
+            }
+
+            map_itr = nodeToButterflies.find(dst);
+            if(map_itr == nodeToButterflies.end()){
+                nodeToButterflies[dst] = weight_sum;
+            }else{
+                nodeToButterflies[dst] = nodeToButterflies[dst] + weight_sum; 
+            }
+
+            globalButterfly += weight_sum;
+        }
+    }
+    else if (lowerBound)
+    { // process the deletion with lower bounding
+
+        double count = 0.0;
+        std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
+        std::unordered_set<VertexID> dst_set = dst_itr->second;
+        std::unordered_set<VertexID> src_set = src_itr->second;
+        dst_set.erase(src);
+        src_set.erase(dst);
+
+        std::unordered_map<VertexID, double>::iterator map_itr;
+        std::unordered_map<VertexID, double>::iterator two_hop_map_itr;
+        std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator two_hop_itr;
+        std::unordered_set<VertexID>::iterator two_hop_nbr_itr;
+
+        while (itr != (src_itr->second).end())
+        {
+            neighbor = *itr;
+            two_hop_itr = srcToDsts.find(neighbor);
+
+            if(neighbor != dst){
+
+                for(two_hop_nbr_itr = (two_hop_itr->second).begin(); two_hop_nbr_itr != (two_hop_itr->second).end(); two_hop_nbr_itr++){
+                    two_hop_neighbor = *two_hop_nbr_itr;
+
+                    if (dst_set.find(two_hop_neighbor) != dst_set.end() && two_hop_neighbor != src){
+                        count += 1.0;
+                        map_itr = nodeToButterflies.find(neighbor);
+                        if(map_itr == nodeToButterflies.end()){
+                            nodeToButterflies[neighbor] = -weight;
+                        }else{
+                            nodeToButterflies[neighbor] = nodeToButterflies[neighbor] - weight; 
+                        }
+
+                        two_hop_map_itr = nodeToButterflies.find(two_hop_neighbor);
+                        if(two_hop_map_itr == nodeToButterflies.end()){
+                            nodeToButterflies[two_hop_neighbor] = -weight;
+                        }else{
+                            nodeToButterflies[two_hop_neighbor] = nodeToButterflies[two_hop_neighbor] - weight; 
+                        }
+                    }
+
+                    if(nodeToButterflies[two_hop_neighbor] < 0){
+                        nodeToButterflies[two_hop_neighbor] = 0;
+                    }
+                }
+
+                if(nodeToButterflies[neighbor] < 0){
+                    nodeToButterflies[neighbor] = 0;
+                }
+            }
+
+            itr++;
+        }
+
+
+        if (count > 0.0)
+        {
+            double weight_sum = count * weight;
+
+            map_itr = nodeToButterflies.find(src);
+            if(map_itr == nodeToButterflies.end()){
+                nodeToButterflies[src] = -weight_sum;
+            }else{
+                nodeToButterflies[src] = nodeToButterflies[src] - weight_sum; 
+            }
+
+            if (nodeToButterflies[src] < 0)
+            {
+                nodeToButterflies[src] = 0; // lower bounding
+            }
+
+
+            map_itr = nodeToButterflies.find(dst);
+            if(map_itr == nodeToButterflies.end()){
+                nodeToButterflies[dst] = -weight_sum;
+            }else{
+                nodeToButterflies[dst] = nodeToButterflies[dst] - weight_sum; 
+            }
+
+            if (nodeToButterflies[dst] < 0)
+            {
+                nodeToButterflies[dst] = 0; // lower bounding
+            }
+
+            globalButterfly -= weight_sum;            
+            globalButterfly = std::max(0.0, globalButterfly); // lower bounding
+        }
+    }
+
+    else
+    { // process the deletion without lower bounding
+
+        double count = 0.0;
+        std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
+        std::unordered_set<VertexID> dst_set = dst_itr->second;
+        std::unordered_set<VertexID> src_set = src_itr->second;
+        dst_set.erase(src);
+        src_set.erase(dst);
+
+        std::unordered_map<VertexID, double>::iterator map_itr;
+        std::unordered_map<VertexID, double>::iterator two_hop_map_itr;
+        std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator two_hop_itr;
+        std::unordered_set<VertexID>::iterator two_hop_nbr_itr;
+
+        while (itr != (src_itr->second).end())
+        {
+            neighbor = *itr;
+            two_hop_itr = srcToDsts.find(neighbor);
+
+            if(neighbor != dst){
+            
+                for(two_hop_nbr_itr = (two_hop_itr->second).begin(); two_hop_nbr_itr != (two_hop_itr->second).end(); two_hop_nbr_itr++){
+                    two_hop_neighbor = *two_hop_nbr_itr;
+
+                    if (dst_set.find(two_hop_neighbor) != dst_set.end() && two_hop_neighbor != src){
+                        count += 1;
+                        map_itr = nodeToButterflies.find(neighbor);
+                        if(map_itr == nodeToButterflies.end()){
+                            nodeToButterflies[neighbor] = -weight;
+                        }else{
+                            nodeToButterflies[neighbor] = nodeToButterflies[neighbor] - weight; 
+                        }
+
+                        two_hop_map_itr = nodeToButterflies.find(two_hop_neighbor);
+                        if(two_hop_map_itr == nodeToButterflies.end()){
+                            nodeToButterflies[two_hop_neighbor] = -weight;
+                        }else{
+                            nodeToButterflies[two_hop_neighbor] = nodeToButterflies[two_hop_neighbor] - weight; 
+                        }
+                    }
+
+                    if(nodeToButterflies[two_hop_neighbor] < 0){
+                        nodeToButterflies[two_hop_neighbor] = 0;
+                    }
+                }
+
+                if(nodeToButterflies[neighbor] < 0){
+                    nodeToButterflies[neighbor] = 0;
+                }
+            }
+
+            itr++;
+        }
+
+        if (count > 0.0)
         {
             double weight_sum = count * weight;
 

@@ -518,6 +518,7 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
     std::ofstream outputfile;
     outputfile.open(output_file, std::ios::app);
 
+
     if (!infile.is_open()) {
         std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
         exit(-1);
@@ -532,7 +533,7 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
     VertexID begin, end;
     std::string addition;
 
-    ui approximated_count = 0, interval_counter = 0, trial_counter = 0, step = 2000;
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
 
     double max_error = 0.0, min_error = 30.0;
 
@@ -543,45 +544,20 @@ void countButterflyForThinkDInFullyDynamicGraphStream(const std::string& file_pa
 
         if(addition == "-"){
             module-> processEdgeButterfly(begin, end, false);
-            //data_graph->delete_edge_butterfly(begin, end);
-
         }else{
             module-> processEdgeButterfly(begin, end, true);
-            //data_graph->add_edge_butterfly(begin, end);
         }
 
         interval_counter++;
 
-        if(interval_counter % step == 0){
+        if(interval_counter % interval == 0){
 
-            outputfile << interval_counter << "  " << module->getGlobalButterfly();
+            outputfile << interval_counter << "  " << module->getGlobalButterfly() << std::endl;
             outputfile.flush();
 
         }
-
-        /*if(interval_counter >= interval){
-
-            //exact_count[serial] = data_graph -> get_global_butterfly_count();
-
-            global_cnt[serial] = module -> getGlobalButterfly();
-
-            //error_array[serial] = std::abs((double) ((exact_count[serial] - global_cnt[serial]) * 100.0) / exact_count[serial]);
-
-            if(max_error < error_array[serial]){
-                max_error = error_array[serial];
-            }
-
-            if(min_error > error_array[serial]){
-                min_error = error_array[serial];
-            }
-
-            interval_counter = 0;
-            serial++;
-        }*/
+        
     }
-
-    std::cout << "Maximum Error : " << max_error << std::endl;
-    std::cout << "Minimum Error : " << min_error << std::endl;
 
     infile.close();
     outputfile.close();
@@ -933,21 +909,25 @@ void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDF
     write_into_output_file(output_file, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
 }*/
 
-//For Square
-/*int main(int argc, char** argv){
+//For Butterfly
+int main(int argc, char** argv){
 
-    //std::string input_data_graph_file = "/home/kars1/Parallel_computation/dataset/com-amazon.ungraph.txt";
-    //std::string input_data_graph_file = "./com-amazon_stm_5fd_l.ungraph.txt";
-    //std::string output_file = "./amazon_thinkd_stm_1000_5fdl_sq.txt";
-
-    std::string input_data_graph_file = "./com-youtube_stm_5fd_l.ungraph.txt";
-    std::string output_file = "./youtube_thinkd_stm_1000_5fdl_by.txt";
+    MatchingCommand command(argc, argv);
+    
+    std::string input_data_graph_file = command.getDataGraphFilePath();
+    std::string output_file = command.getOutputFilePath();
+    std::string memory_budget_str = command.getMemoryBudget();
 
     ui memory_budget = 65536;
     bool lowerbound = true;
-    ui interval = 1000, serial_cnt = 0; 
+    ui interval = 2000, serial_cnt = 0; 
 
     ui max_array_limit = 100000;
+
+
+    std::cout << "Input File : " << input_data_graph_file << std::endl;    
+    std::cout << "Memory Budget : " << memory_budget << std::endl;
+    std::cout << "Interval : " << interval << std::endl;
 
     long long* exact_cnt_array = new long long[max_array_limit];
     double* global_cnt_array = new double[max_array_limit];
@@ -960,10 +940,10 @@ void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDF
     //loadFullyDynamicGraphStreamForThinkD(input_data_graph_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
     //countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
     countButterflyForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
-}*/
+}
 
 
-int main(int argc, char** argv){
+/*int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
     
@@ -973,4 +953,4 @@ int main(int argc, char** argv){
     Graph* data_graph = new Graph();
 
     printExactButterflyCount(input_data_graph_file, output_file, data_graph, 2000);
-}
+}*/
