@@ -446,6 +446,8 @@ void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path,
                                     long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
     
     std::ifstream infile(file_path);
+    std::ofstream outputfile;
+    outputfile.open(output_file, std::ios::app);
 
     if (!infile.is_open()) {
         std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
@@ -472,42 +474,26 @@ void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path,
 
         if(addition == "-"){
             module-> processEdgeSquare(begin, end, false);
-            data_graph->delete_edge_square(begin, end);
-
         }else{
             module-> processEdgeSquare(begin, end, true);
-            data_graph->add_edge_square(begin, end);
         }
 
         interval_counter++;
 
-        if(interval_counter >= interval){
+        if(interval_counter % interval == 0){
 
-            exact_count[serial] = data_graph -> get_global_square_count();
+            outputfile << interval_counter << "  " << module->getGlobalSquare() << std::endl;
+            outputfile.flush();
 
-            global_cnt[serial] = module -> getGlobalSquare();
-
-            error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalSquare()) * 100.0) / exact_count[serial]);
-
-            if(max_error < error_array[serial]){
-                max_error = error_array[serial];
-            }
-
-            if(min_error > error_array[serial]){
-                min_error = error_array[serial];
-            }
-
-            interval_counter = 0;
-            serial++;
         }
+        
     }
 
-    std::cout << "Maximum Error : " << max_error << std::endl;
-    std::cout << "Minimum Error : " << min_error << std::endl;
 
     infile.close();
+    outputfile.close();
 
-    write_into_output_file(output_file, exact_count, global_cnt, error_array, serial);
+    //write_into_output_file(output_file, exact_count, global_cnt, error_array, serial);
 }
 
 
@@ -993,7 +979,39 @@ int main(int argc, char** argv){
 }*/
 
 
+//For Square
 int main(int argc, char** argv){
+
+    MatchingCommand command(argc, argv);
+    
+    std::string input_data_graph_file = command.getDataGraphFilePath();
+    std::string output_file = command.getOutputFilePath();
+    std::string memory_budget_str = command.getMemoryBudget();
+
+    ui memory_budget = 65536;
+    bool lowerbound = true;
+    ui interval = 2000, serial_cnt = 0; 
+
+    ui max_array_limit = 100000;
+
+
+    std::cout << "Input File : " << input_data_graph_file << std::endl;    
+    std::cout << "Memory Budget : " << memory_budget << std::endl;
+    std::cout << "Interval : " << interval << std::endl;
+
+    long long* exact_cnt_array = new long long[max_array_limit];
+    double* global_cnt_array = new double[max_array_limit];
+    double* error_array = new double[max_array_limit];   
+
+    Graph* data_graph = new Graph();
+
+    ThinkDFD* module = new ThinkDFD(memory_budget, lowerbound);    
+    countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
+    
+}
+
+
+/*int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
     
@@ -1007,4 +1025,4 @@ int main(int argc, char** argv){
 
     //printExactButterflyCount(input_data_graph_file, output_file, data_graph, 2000);
     printExactSquareCount(input_data_graph_file, output_file, data_graph, step);
-}
+}*/

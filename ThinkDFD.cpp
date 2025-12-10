@@ -161,8 +161,6 @@ void ThinkDFD::processEdgeSquare(VertexID src, VertexID dst, bool add)
         s--;
     }
     
-         // count the added or deleted triangles
-    
     return;
 }
 
