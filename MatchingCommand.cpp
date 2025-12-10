@@ -7,6 +7,7 @@ MatchingCommand::MatchingCommand(const int argc, char **argv) : CommandParser(ar
     options_key[OptionKeyword::AlgorithmSerial] = "-a";
     options_key[OptionKeyword::MemoryBudget] = "-m";
     options_key[OptionKeyword::SamplingProbability] = "-s";
+    options_key[OptionKeyword::Step] = "-c";
     processOptions();
 };
 
@@ -17,4 +18,5 @@ void MatchingCommand::processOptions() {
     options_value[OptionKeyword::AlgorithmSerial] = getCommandOption(options_key[OptionKeyword::AlgorithmSerial]);
     options_value[OptionKeyword::MemoryBudget] = getCommandOption(options_key[OptionKeyword::MemoryBudget]);
     options_value[OptionKeyword::SamplingProbability] =  getCommandOption(options_key[OptionKeyword::SamplingProbability]);
+    options_value[OptionKeyword::Step] =  getCommandOption(options_key[OptionKeyword::Step]);
 }

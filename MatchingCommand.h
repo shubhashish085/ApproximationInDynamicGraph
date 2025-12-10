@@ -9,7 +9,8 @@ enum OptionKeyword {
     OutputFilePath = 1,      // -output, the output file path, compulsive parameter
     AlgorithmSerial = 2,
     MemoryBudget = 3,
-    SamplingProbability = 4
+    SamplingProbability = 4,
+    Step = 5,
 };
 
 class MatchingCommand : public CommandParser{
@@ -41,6 +42,10 @@ public:
 
     std::string getSamplingProbability(){
         return options_value[OptionKeyword::SamplingProbability];
+    }
+
+    std::string getStepCount(){
+        return options_value[OptionKeyword::Step];
     }
 
 };

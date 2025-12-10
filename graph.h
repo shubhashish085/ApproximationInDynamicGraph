@@ -147,9 +147,6 @@ public:
     void add_edge_square(VertexID u, VertexID v){
 
         edge_list.push_back(std::make_pair(u, v));
-        //KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
-
-        //edgeToIndex.emplace(key, edge_list.size() - 1);
 
         if(adj_list.find(u) == adj_list.end()){
             std::set<VertexID> u_nbr;
@@ -167,16 +164,13 @@ public:
             adj_list[v].insert(u);
         }
 
-        ui set_intersection_length = get_square_count(u, v);
-        global_square_cnt += set_intersection_length;
+        ui square_cnt = get_square_count(u, v);
+        global_square_cnt += square_cnt;
     }
 
     void add_edge_butterfly(VertexID u, VertexID v){
 
         edge_list.push_back(std::make_pair(u, v));
-        //KeyID key = ((KeyID)u * std::numeric_limits<unsigned int>::max()) + v;
-
-        //edgeToIndex.emplace(key, edge_list.size() - 1);
 
         if(adj_list.find(u) == adj_list.end()){
             std::set<VertexID> u_nbr;
@@ -194,8 +188,8 @@ public:
             adj_list[v].insert(u);
         }
 
-        ui set_intersection_length = get_butterfly_count(u, v);
-        global_butterfly_cnt += set_intersection_length;
+        ui bfy_cnt = get_butterfly_count(u, v);
+        global_butterfly_cnt += bfy_cnt;
     }
 
 
@@ -302,43 +296,35 @@ public:
 
     ui get_square_count(VertexID u, VertexID v){
 
-        std::set<VertexID> two_hop_nbrs, intersection_set;
-
+        ui square_count = 0;
         std::set<VertexID>::iterator itr, inner_itr;
 
         for (itr = adj_list[u].begin(); itr != adj_list[u].end(); itr++) {
             for(inner_itr = adj_list[*itr].begin(); inner_itr != adj_list[*itr].end(); inner_itr++){
-                if(*inner_itr != u){
-                    two_hop_nbrs.insert(*inner_itr);
+                if(*inner_itr != u && adj_list[v].find(*inner_itr) != adj_list[v].end()){
+                    square_count += 1;
                 }                
             }
         }
 
-        std::set_intersection(adj_list[v].begin(), adj_list[v].end(), two_hop_nbrs.begin(), two_hop_nbrs.end(), std::inserter(intersection_set, intersection_set.begin()));
-
-        ui intersection_set_size = (ui)(intersection_set.size());
-
-        return intersection_set_size;
+        return square_count;
     }
 
     ui get_butterfly_count(VertexID u, VertexID v){
 
-        std::set<VertexID> two_hop_nbrs, intersection_set;
+        ui butterfly_count = 0;
 
         std::set<VertexID>::iterator itr, inner_itr;
 
         for (itr = adj_list[u].begin(); itr != adj_list[u].end(); itr++) {
             for(inner_itr = adj_list[*itr].begin(); inner_itr != adj_list[*itr].end(); inner_itr++){
-                if(*inner_itr != u){
-                    two_hop_nbrs.insert(*inner_itr);
+                if(*inner_itr != u && adj_list[v].find(*inner_itr) != adj_list[v].end()){
+                    butterfly_count += 1;
                 }                
             }
         }
 
-        std::set_intersection(adj_list[v].begin(), adj_list[v].end(), two_hop_nbrs.begin(), two_hop_nbrs.end(), std::inserter(intersection_set, intersection_set.begin()));
-        ui intersection_set_size = (ui)(intersection_set.size());
-
-        return intersection_set_size;        
+        return butterfly_count;        
     }
 
     ui get_nbr_set_intersection_count(VertexID u, VertexID v){

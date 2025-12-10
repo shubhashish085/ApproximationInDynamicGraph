@@ -614,6 +614,55 @@ void printExactButterflyCount(const std::string& file_path, const std::string& o
     outputfile.close();
 }
 
+void printExactSquareCount(const std::string& file_path, const std::string& output_file, Graph*& data_graph, ui step){
+
+    std::ifstream infile(file_path);
+    std::ofstream outputfile;
+    outputfile.open(output_file, std::ios::app);
+
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    VertexID begin, end;
+    std::string addition;
+
+    ui  interval_counter = 0;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        infile >> addition;
+
+        if(addition == "-"){
+            data_graph->delete_edge_square(begin, end);
+
+        }else{
+            data_graph->add_edge_square(begin, end);
+        }
+
+        interval_counter++;
+
+        if(interval_counter % step == 0){
+            outputfile << interval_counter << "  " << data_graph -> get_global_square_count() << std::endl;
+            outputfile.flush();
+        }       
+    }
+
+    infile.close();
+    outputfile.flush();
+    outputfile.close();
+}
+
+
 void printErrorDetails(const std::string& input_file_1, const std::string& input_file_2){
 
     std::ifstream infile1(input_file_1);
@@ -910,6 +959,7 @@ void loadIncrementalGraphByStreamForThinkD(const std::string& file_path, ThinkDF
 }*/
 
 //For Butterfly
+/*
 int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
@@ -940,17 +990,21 @@ int main(int argc, char** argv){
     //loadFullyDynamicGraphStreamForThinkD(input_data_graph_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
     //countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
     countButterflyForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
-}
+}*/
 
 
-/*int main(int argc, char** argv){
+int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
     
     std::string input_data_graph_file = command.getDataGraphFilePath();
     std::string output_file = command.getOutputFilePath();
+    std::string step_count = command.getStepCount();
+
+    ui step = std::stoi(step_count);
 
     Graph* data_graph = new Graph();
 
-    printExactButterflyCount(input_data_graph_file, output_file, data_graph, 2000);
-}*/
+    //printExactButterflyCount(input_data_graph_file, output_file, data_graph, 2000);
+    printExactSquareCount(input_data_graph_file, output_file, data_graph, step);
+}
