@@ -59,6 +59,8 @@ public:
 
     void count_squares(VertexID src, VertexID dst, bool add);
 
+    void count_squares_with_removal(VertexID src, VertexID dst, bool add);
+
     void count_butterfly(VertexID src, VertexID dst, bool add);
 
     void count_butterfly_with_removal(VertexID src, VertexID dst, bool add);

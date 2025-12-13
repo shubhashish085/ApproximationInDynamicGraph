@@ -112,7 +112,7 @@ void ThinkDFD::processEdgeSquare(VertexID src, VertexID dst, bool add)
         dst = temp;
     }
 
-    count_squares(src, dst, add);
+    count_squares_with_removal(src, dst, add);
 
     bool isSample = false;
     if (add)
@@ -515,7 +515,7 @@ void ThinkDFD::count_triangles(VertexID src, VertexID dst, bool add)
 }
 
 
-void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
+void ThinkDFD::count_squares_with_removal(VertexID src, VertexID dst, bool add)
 {
 
     // if this edge has a new node, there cannot be any triangles
@@ -543,6 +543,10 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
         double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
         std::unordered_set<VertexID> dst_set = dst_itr->second;
+        std::unordered_set<VertexID> src_set = src_itr->second;
+        dst_set.erase(src);
+        src_set.erase(dst);
+
         std::unordered_map<VertexID, double>::iterator map_itr;
         std::unordered_map<VertexID, double>::iterator two_hop_map_itr;
         std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator two_hop_itr;
@@ -582,7 +586,7 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
             itr++;
         }
 
-        if (count > 0)
+        if (count > 0.0)
         {
             double weight_sum = count * weight;
 
@@ -609,6 +613,9 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
         double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
         std::unordered_set<VertexID> dst_set = dst_itr->second;
+        std::unordered_set<VertexID> src_set = src_itr->second;
+        dst_set.erase(src);
+        src_set.erase(dst);
         std::unordered_map<VertexID, double>::iterator map_itr;
         std::unordered_map<VertexID, double>::iterator two_hop_map_itr;
         std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator two_hop_itr;
@@ -695,6 +702,9 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
         double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();
         std::unordered_set<VertexID> dst_set = dst_itr->second;
+        std::unordered_set<VertexID> src_set = src_itr->second;
+        dst_set.erase(src);
+        src_set.erase(dst);
         std::unordered_map<VertexID, double>::iterator map_itr;
         std::unordered_map<VertexID, double>::iterator two_hop_map_itr;
         std::unordered_map<VertexID, std::unordered_set<VertexID>>::iterator two_hop_itr;
@@ -740,7 +750,7 @@ void ThinkDFD::count_squares(VertexID src, VertexID dst, bool add)
             itr++;
         }
 
-        if (count > 0)
+        if (count > 0.0)
         {
             double weight_sum = count * weight;
 

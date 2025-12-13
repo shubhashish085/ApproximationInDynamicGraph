@@ -442,8 +442,7 @@ void loadFullyDynamicGraphStreamForThinkD(const std::string& file_path, ThinkDFD
     infile.close();
 }
 
-void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path, const std::string& output_file, ThinkDFD*& module, Graph*& data_graph, ui interval,
-                                    long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
+void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path, const std::string& output_file, ThinkDFD*& module, Graph*& data_graph, ui interval){
     
     std::ifstream infile(file_path);
     std::ofstream outputfile;
@@ -1006,7 +1005,7 @@ int main(int argc, char** argv){
     Graph* data_graph = new Graph();
 
     ThinkDFD* module = new ThinkDFD(memory_budget, lowerbound);    
-    countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval, exact_cnt_array, global_cnt_array, error_array, serial_cnt);
+    countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval);
     
 }
 
