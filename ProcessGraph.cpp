@@ -10,6 +10,7 @@
 #include "MascotFD.hpp"
 #include "ThinkDFD.hpp"
 #include "TriestFD.hpp"
+#include "PES.hpp"
 
 
 void write_into_output_file(std::string output_file_path, long long* exact_cnt_array, double* global_cnt, double* error, ui serial_cnt){
@@ -223,6 +224,84 @@ void loadIncrementalGraphByStreamForMascot(const std::string& file_path, MascotF
     infile.close();
 
 }
+
+
+void loadIncrementalGraphByStreamForPES(const std::string& file_path, PES*& module, Graph*& data_graph, ui interval, 
+                                long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){
+
+    std::ifstream infile(file_path);
+    long long exact_triangle_cnt = 0;
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    ui line_count = 0, count = 0, comment_line_count = 4;
+
+    while (std::getline(infile, input_line)) {
+
+        line_count++;
+
+        if(line_count >= comment_line_count){
+            break;
+        }
+    }
+
+    VertexID begin, end;
+
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+
+    double max_error = 0.0, min_error = 30.0;
+
+    std::cout << "Ignoring the comments... " << std::endl;
+
+    while(infile >> begin) {
+
+        infile >> end;
+        module-> processEdge(begin, end, true);
+        data_graph->add_edge(begin, end);
+
+        
+        interval_counter++;
+
+        if(interval_counter >= interval){
+
+            trial_counter++;            
+
+            exact_count[serial] = data_graph->get_global_triangle_count();
+
+            global_cnt[serial] = module->getGlobalTriangle();
+
+            error_array[serial] = std::abs((double) ((exact_count[serial] - module->getGlobalTriangle()) * 100.0) / exact_count[serial]);
+
+            if(max_error < error_array[serial]){
+                max_error = error_array[serial];
+            }
+
+            if(min_error > error_array[serial]){
+                min_error = error_array[serial];
+            }
+
+            interval_counter = 0;
+            serial++;            
+        }
+    }
+
+
+    std::cout << "Maximum Error : " << max_error << std::endl;
+    std::cout << "Minimum Error : " << min_error << std::endl;
+
+    infile.close();
+
+}
+
 
 void loadFullyDynamicGraphByStreamForTriest(const std::string& file_path, TriestFD*& module, Graph*& data_graph, ui interval,
                                 long long*& exact_count, double*& global_cnt, double*& error_array, ui& serial){

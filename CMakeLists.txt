@@ -15,6 +15,8 @@ set(APPROXIMATION_FILE_LIST
         MatchingCommand.cpp
         MascotFD.cpp
         MascotFD.hpp
+        PES.hpp
+        PES.cpp
         ThinkDFD.cpp
         ThinkDFD.hpp
         TriestFD.cpp
