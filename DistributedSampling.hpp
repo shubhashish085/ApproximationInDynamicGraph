@@ -12,6 +12,21 @@ class ComputingNode {
 
 public:
 
+    //cocos
+    int workerNum;
+    double tolerancePlusOne;
+
+    long* workerToLoad;
+    long minLoad;
+    double threshold;
+    long minLoadWorker;
+
+    NodeID* nodeToWorker;
+    NodeID maxVId;
+    VertexID capacity;
+
+
+
     VertexID maxVertexId;
 
     std::unordered_map<VertexID, std::unordered_set<VertexID>> srcToDsts; // graph composed of the sampled edges
@@ -31,12 +46,46 @@ public:
 
     ComputingNode(){}
 
+    ComputingNode(int workerNum, double tolerance, int k, unsigned int seed): 
+    workerNum(workerNum), tolerancePlusOne(tolerance+1.0), workerToLoad(nullptr), minLoad(0), threshold(0.0), minLoadWorker(0),nodeToWorker(nullptr),  maxVId(128){
+        
+        srand(seed+time(NULL));
+	    samples = new ui* [2];
+
+        for(ui i = 0; i < 2; i++){
+            samples[i] = new ui[k];
+        }
+
+        capacity = maxVId;
+        workerToLoad = new long[workerNum];
+        for (NodeID i = 0; i < workerNum; i++)
+        {
+            workerToLoad[i] = 0;
+        }
+
+        nodeToWorker = new NodeID[maxVId];
+        for (NodeID i = 0; i < maxVId; i++)
+        {
+            nodeToWorker[i] = missingMId;
+        }
+    }
+
     ComputingNode(int k, unsigned int seed){
         srand(seed+time(NULL));
 	    samples = new ui* [2];
 
         for(ui i = 0; i < 2; i++){
             samples[i] = new ui[k];
+        }
+    }
+
+    ~ComputingNode(){
+        if(workerToLoad != nullptr) {
+            delete[] workerToLoad;
+        }
+
+        if(nodeToWorker != nullptr) {
+            delete[] nodeToWorker;
         }
     }
 
@@ -54,7 +103,9 @@ public:
         }
 
         return true;
-    }    
+    }
+
+    bool processEdgeForMasterInCocos(Edge &iEdge, NodeID &oDstMID1, NodeID &oDstMID2);    
 
         
     void addEdge(Edge& edge);

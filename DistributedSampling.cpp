@@ -2,6 +2,7 @@
 #include <limits>
 #include <random>
 #include <cmath>
+#include <cstring>
 
 
 void ComputingNode::processAddition(Edge& edge){
@@ -90,6 +91,99 @@ void ComputingNode::processEdgeForWorker(Edge& edge){
     }
     
     return;
+}
+
+bool ComputingNode::processEdgeForMasterInCocos(Edge& iEdge, NodeID &oDstMID1, NodeID &oDstMID2){
+
+    VertexID src = iEdge.src;
+    VertexID dst = iEdge.dst;
+    if (src > maxVertexId) {
+        maxVertexId = src;
+    }
+    if (dst > maxVertexId) {
+        maxVertexId = dst;
+    }
+	
+
+    if(maxVertexId >= capacity) {
+
+        VertexID newCapacity = 2 * maxVertexId;
+        NodeID * newNodeToWorker = new NodeID[newCapacity];
+        std::memcpy(newNodeToWorker, nodeToWorker, capacity * sizeof(NodeID));
+        std::memset(newNodeToWorker + capacity, missingMId, (newCapacity - capacity) * sizeof(NodeID));
+        capacity = newCapacity;
+        delete[] nodeToWorker;
+        nodeToWorker = newNodeToWorker;
+    }
+
+    if(nodeToWorker[src] == missingMId)
+    {
+        if(nodeToWorker[dst] == missingMId) // two new nodes
+        {
+            oDstMID1 = minLoadWorker;
+            oDstMID2 = minLoadWorker;
+            nodeToWorker[src] = oDstMID1;
+            nodeToWorker[dst] = oDstMID2;
+        }
+        else // one new node
+        {
+            oDstMID2 = nodeToWorker[dst];
+            if(workerToLoad[oDstMID2] <= threshold)
+            {
+                oDstMID1 = oDstMID2;
+            }
+            else
+            {
+                oDstMID1 = minLoadWorker;
+            }
+            nodeToWorker[src] = oDstMID1;
+        }
+    }
+    else
+    {
+        if(nodeToWorker[dst] == missingMId) // one new node
+        {
+            oDstMID1 = nodeToWorker[src];
+            if(workerToLoad[oDstMID1] <= threshold)
+            {
+                oDstMID2 = oDstMID1;
+            }
+            else
+            {
+                oDstMID2 = minLoadWorker;
+            }
+            nodeToWorker[dst] = oDstMID2;
+        }
+        else // zero new node
+        {
+            oDstMID1 = nodeToWorker[src];
+            oDstMID2 = nodeToWorker[dst];
+        }
+    }
+
+    if(oDstMID1 == oDstMID2) {
+        workerToLoad[oDstMID1] += 1;
+    }
+    else {
+        workerToLoad[oDstMID1] += 1;
+        workerToLoad[oDstMID2] += 1;
+    }
+
+    //find new minimum load worker
+    if(oDstMID1 == minLoadWorker || oDstMID2 == minLoadWorker)
+    {
+        minLoad = workerToLoad[minLoadWorker];
+        for(NodeID i = 0; i < workerNum; i++) {
+            if (workerToLoad[i] < minLoad) {
+                minLoad = workerToLoad[i];
+                minLoadWorker = i;
+            }
+        }
+        threshold = minLoad * tolerancePlusOne;
+    }
+
+    return oDstMID1 != oDstMID2;
+
 }
 
 
