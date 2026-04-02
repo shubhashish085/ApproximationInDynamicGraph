@@ -57,7 +57,7 @@ public:
     long long alt_count_exact_triangle();
     long long count_exact_butterfly();
     long long count_exact_square();
-
+    long long count_exact_square_updated();
 
 
     const ui* getOffsets() const {

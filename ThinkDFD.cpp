@@ -461,7 +461,6 @@ void ThinkDFD::count_triangles(VertexID src, VertexID dst, bool add)
             globalTriangle = std::max(0.0, globalTriangle); // lower bounding
         }
     }
-
     else
     { // process the deletion without lower bounding
 
@@ -694,10 +693,7 @@ void ThinkDFD::count_squares_with_removal(VertexID src, VertexID dst, bool add)
             globalSquare -= weight_sum;            
             globalSquare = std::max(0.0, globalSquare); // lower bounding
         }
-    }
-
-    else
-    { // process the deletion without lower bounding
+    } else { // process the deletion without lower bounding
 
         double count = 0.0;
         std::unordered_set<VertexID>::iterator itr = (src_itr->second).begin();

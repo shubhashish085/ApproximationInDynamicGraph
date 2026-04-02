@@ -5,9 +5,29 @@
 #include <unordered_set>
 #include <vector>
 #include <random>
+#include <utility>
 #include "graph.h"
 #include "types.h"
 
+
+struct pair_hash {
+
+    static inline size_t hash_vertex(VertexID u) {
+        size_t x = u;
+        x ^= x >> 33;
+        x *= 0xff51afd7ed558ccdULL;
+        x ^= x >> 33;
+        x *= 0xc4ceb9fe1a85ec53ULL;
+        x ^= x >> 33;
+        return x;
+    }
+
+    std::size_t operator()(const std::pair<VertexID, VertexID>& p) const {
+        std::size_t h1 = hash_vertex(p.first);
+        std::size_t h2 = hash_vertex(p.second);
+        return h1 ^ (h2 << 1);
+    }
+};
 
 class PESComputingNode {
 
@@ -15,7 +35,7 @@ public:
 
     VertexID maxVertexId;
 
-    std::unordered_multimap<std::pair<VertexID, VertexID>, std::pair<VertexID, ui>> wedge_pool;
+    std::unordered_multimap<std::pair<VertexID, VertexID>, std::pair<VertexID, ui>, pair_hash> wedge_pool;
     std::vector<std::tuple<VertexID, VertexID, VertexID, bool>> wedge_list;
 
     std::unordered_map<VertexID, std::unordered_set<VertexID>> srcToDsts;

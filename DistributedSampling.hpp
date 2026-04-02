@@ -25,8 +25,6 @@ public:
     NodeID maxVId;
     VertexID capacity;
 
-
-
     VertexID maxVertexId;
 
     std::unordered_map<VertexID, std::unordered_set<VertexID>> srcToDsts; // graph composed of the sampled edges
@@ -105,8 +103,7 @@ public:
         return true;
     }
 
-    bool processEdgeForMasterInCocos(Edge &iEdge, NodeID &oDstMID1, NodeID &oDstMID2);    
-
+    bool processEdgeForMasterInCocos(Edge &iEdge, NodeID &oDstMID1, NodeID &oDstMID2);
         
     void addEdge(Edge& edge);
 

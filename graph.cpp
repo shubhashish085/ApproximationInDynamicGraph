@@ -170,7 +170,35 @@ long long Graph::count_exact_square(){
     }
 
     return (exact_count/4);
+}
 
+
+long long Graph::count_exact_square_updated(){
+
+    long long exact_count = 0;
+    ui set_intersection_length = 0;
+    std::set<VertexID> u_nbrs, v_nbrs, x_nbrs;
+    std::set<VertexID> intersection_set;
+
+    for(auto entry:adj_list){
+        u_nbrs = entry.second;
+        for(auto set_itr = entry.second.begin(); set_itr != entry.second.end(); set_itr++){
+            if(entry.first < *set_itr){
+                v_nbrs = adj_list[*set_itr];
+                for(auto u_nbr_itr = u_nbrs.begin(); u_nbr_itr != u_nbrs.end(); u_nbr_itr++){
+                    if(*set_itr < *u_nbr_itr){
+                        x_nbrs = adj_list[*u_nbr_itr];
+                        std::set_intersection(v_nbrs.begin(), v_nbrs.end(), x_nbrs.begin(), x_nbrs.end(), std::inserter(intersection_set, intersection_set.begin()));
+                        set_intersection_length = intersection_set.size() - 1;
+                        exact_count += set_intersection_length;
+                        intersection_set.clear();
+                    }
+                }
+            }
+        }
+    }
+
+    return exact_count;
 }
 
 

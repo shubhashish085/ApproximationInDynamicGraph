@@ -15,6 +15,10 @@ typedef ui LabelID;
 
 const int MPI_MASTER = 0;
 const int missingMId = -1;
+const ui INTERVAL = 1000;
+
+
+const std::string ALG_THINKD_SQR = "THINKD_SQUARE";
 
 const VertexID INVALID_VID(std::numeric_limits<VertexID>::max());
 const NodeID INVALID_MID(std::numeric_limits<NodeID>::max());

@@ -4,7 +4,7 @@
 #include "DistributedRun.hpp"
 #include "DistributionCoordinator.hpp"
 
-double run_mpi(const char* filename, DistributionCoordinator &hIO, int workerNum, int memSize, int lenBuf, double tolerance, unsigned int seed, std::vector<float> & oLocalCnt, double &srcCompCost, double &workerCompCostMax, double &workerCompCostSum)
+double run_mpi(const char* filename, std::string output_file_name, DistributionCoordinator &hIO, int workerNum, int memSize, int lenBuf, double tolerance, unsigned int seed, std::vector<float> & oLocalCnt, double &srcCompCost, double &workerCompCostMax, double &workerCompCostSum)
 {
     clock_t begin = clock();
 
@@ -50,15 +50,9 @@ double run_mpi(const char* filename, DistributionCoordinator &hIO, int workerNum
 
         hIO.sendEndSignal();
 
-        //std::cout << "Master: " << double(clock() - begin) / CLOCKS_PER_SEC << "\t" << hIO.getIOCPUTime() / CLOCKS_PER_SEC << "\t" <<  srcCompCost << endl;
-
-        // Gather results from curWorkers
         double globalCnt = 0;
 
-        // communication cost for gather
         hIO.recvCnt(masterNode.maxVertexId, globalCnt, oLocalCnt);
-
-        //std::cout << source.getMaxVId() << "\t" << globalCnt << "\t" << oLocalCnt.size();
 
         hIO.recvTime(workerCompCostMax, workerCompCostSum);
 
@@ -76,16 +70,32 @@ double run_mpi(const char* filename, DistributionCoordinator &hIO, int workerNum
     }
     else // Worker part
     {
-
-        //std::cout << "worker begins..." << endl;
-
         ComputingNode  worker(memSize, seed + hIO.getWorkerId());
+        ui edge_cnt = 0;
         Edge edge;
+
+        double total_time = 0, per_execution_time;
+
+        std::vector<double> global_cnt_vtr;
+        std::vector<double> elapsed_time_vtr;
+
+        std::string output_file = "Sq_" + output_file_name + "_p_" + std::to_string(hIO.getRank()) + ".txt";
+
+
         while(hIO.recvEdge(edge))
         {
-
+            std::clock_t begin = clock(); 
             worker.processEdgeForWorker(edge);
+            per_execution_time = (double)(clock() - begin) / CLOCKS_PER_SEC ;
+            total_time += per_execution_time; 
 
+            edge_cnt += 1;
+
+            if(edge_cnt % 1000 == 0){
+                global_cnt_vtr.push_back(worker.globalCnt);
+                elapsed_time_vtr.push_back(total_time);
+                total_time = 0;
+            }
         }
 
         // send counts to master
@@ -94,13 +104,16 @@ double run_mpi(const char* filename, DistributionCoordinator &hIO, int workerNum
         double workerCompCost = (double(clock() - begin) - hIO.getIOCPUTime()) / CLOCKS_PER_SEC; // source cpu time
 
         hIO.sendTime(workerCompCost);
+
+        write_worker_results_to_output_file(filename, output_file, ALG_THINKD_SQR, memSize, INTERVAL, global_cnt_vtr, elapsed_time_vtr);
+
         return 0;
     }
 
 }
 
 
-double run_mpi_pes(const char* filename, DistributionCoordinator &hIO, int workerNum, int memSize, ui pool_size, double sample_probability,
+double run_mpi_pes(const char* filename, std::string output_file_name, DistributionCoordinator &hIO, int workerNum, int memSize, ui pool_size, double sample_probability,
  int lenBuf, double tolerance, unsigned int seed, std::vector<float> & oLocalCnt, double &srcCompCost, double &workerCompCostMax, double &workerCompCostSum)
 {
     clock_t begin = clock();
@@ -146,7 +159,6 @@ double run_mpi_pes(const char* filename, DistributionCoordinator &hIO, int worke
         }
 
         hIO.sendEndSignal();
-
         //std::cout << "Master: " << double(clock() - begin) / CLOCKS_PER_SEC << "\t" << hIO.getIOCPUTime() / CLOCKS_PER_SEC << "\t" <<  srcCompCost << endl;
 
         // Gather results from curWorkers
@@ -175,18 +187,15 @@ double run_mpi_pes(const char* filename, DistributionCoordinator &hIO, int worke
     {
 
         //std::cout << "worker begins..." << endl;
-
         ui memory_budget;
         double sample_probability;
         ui pool_size;
 
-
         PESComputingNode  worker(memory_budget, sample_probability, pool_size);
         Edge edge;
-        while(hIO.recvEdge(edge))
-        {
-            worker.processEdgeForPesInCocos(edge);
 
+        while(hIO.recvEdge(edge)){
+            worker.processEdgeForPesInCocos(edge);
         }
 
         // send counts to master
@@ -197,12 +206,10 @@ double run_mpi_pes(const char* filename, DistributionCoordinator &hIO, int worke
         hIO.sendTime(workerCompCost);
         return 0;
     }
-
 }
 
 
-
-void run_exp (const char* input, const char* outPath, DistributionCoordinator &hIO, int workerNum, int memSize, int repeat, int bufLen, double tolerance)
+void run_exp (const char* input, std::string outPath, DistributionCoordinator &hIO, int workerNum, int memSize, int repeat, int bufLen, double tolerance)
 {
 
     int seed = 0;
@@ -211,20 +218,7 @@ void run_exp (const char* input, const char* outPath, DistributionCoordinator &h
 
 	if (hIO.isMaster())
 	{
-		struct stat sb;
-		if (stat(outPath, &sb) == 0)
-		{
-			if (S_ISDIR(sb.st_mode)) //TODO. directory is exists
-				;
-			else if (S_ISREG(sb.st_mode)) //TODO. No directory but a regular file with same name
-				;
-			else // TODO. handle undefined cases.
-				;
-		} 
-		else 
-		{
-			mkdir(outPath, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-		}
+		
 	}
 
     for(int i =0 ; i < repeat; i++) {
@@ -239,7 +233,7 @@ void run_exp (const char* input, const char* outPath, DistributionCoordinator &h
             double workerCompCostMax = 0;
             double workerCompCostSum = 0;
 
-            double globalCnt = run_mpi(input, hIO, workerNum, memSize, bufLen, tolerance, seed + repeat * workerNum * i, nodeToCnt, srcCompCost, workerCompCostMax, workerCompCostSum);
+            double globalCnt = run_mpi(input, outPath, hIO, workerNum, memSize, bufLen, tolerance, seed + repeat * workerNum * i, nodeToCnt, srcCompCost, workerCompCostMax, workerCompCostSum);
 
             gettimeofday(&endTV, NULL);
 
@@ -253,7 +247,52 @@ void run_exp (const char* input, const char* outPath, DistributionCoordinator &h
             double workerCompCostMax = 0;
             double workerCompCostSum = 0;
             std::vector<float> nodeToCnt;
-            run_mpi(input, hIO, workerNum, memSize, bufLen, tolerance, seed + repeat * workerNum * i, nodeToCnt, srcCompCost, workerCompCostMax, workerCompCostSum);
+            run_mpi(input, outPath, hIO, workerNum, memSize, bufLen, tolerance, seed + repeat * workerNum * i, nodeToCnt, srcCompCost, workerCompCostMax, workerCompCostSum);
         }
     }
 }
+
+
+void run_exp_pes (const char* input, std::string outPath, DistributionCoordinator &hIO, int workerNum, int memSize, int repeat, int bufLen, double tolerance)
+{
+
+    int seed = 0;
+
+    struct timeval diff, startTV, endTV;
+
+	if (hIO.isMaster())
+	{
+		
+	}
+
+    for(int i =0 ; i < repeat; i++) {
+
+        if (hIO.isMaster()) {
+
+            gettimeofday(&startTV, NULL);
+
+            std::vector<float> nodeToCnt;
+
+            double srcCompCost = 0;
+            double workerCompCostMax = 0;
+            double workerCompCostSum = 0;
+
+            double globalCnt = run_mpi(input, outPath, hIO, workerNum, memSize, bufLen, tolerance, seed + repeat * workerNum * i, nodeToCnt, srcCompCost, workerCompCostMax, workerCompCostSum);
+
+            gettimeofday(&endTV, NULL);
+
+            timersub(&endTV, &startTV, &diff);
+
+            double elapsedTime = diff.tv_sec * 1000 + diff.tv_usec / 1000 ;
+
+        } else {
+
+            double srcCompCost = 0;
+            double workerCompCostMax = 0;
+            double workerCompCostSum = 0;
+            std::vector<float> nodeToCnt;
+            //run_mpi_pes(input, hIO, workerNum, memSize, bufLen, tolerance, seed + repeat * workerNum * i, nodeToCnt, srcCompCost, workerCompCostMax, workerCompCostSum);
+        }
+    }
+}
+

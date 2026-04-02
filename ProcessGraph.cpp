@@ -1058,7 +1058,7 @@ int main(int argc, char** argv){
 
 
 //For Square
-int main(int argc, char** argv){
+/*int main(int argc, char** argv){
 
     MatchingCommand command(argc, argv);
     
@@ -1086,7 +1086,7 @@ int main(int argc, char** argv){
     ThinkDFD* module = new ThinkDFD(memory_budget, lowerbound);    
     countSquareForThinkDInFullyDynamicGraphStream(input_data_graph_file, output_file, module, data_graph, interval);
     
-}
+}*/
 
 
 /*int main(int argc, char** argv){

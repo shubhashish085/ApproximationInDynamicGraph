@@ -17,7 +17,7 @@ DistributionCoordinator::DistributionCoordinator(int &argc, char** &argv)//, bit
 
 	// Initialize and Register struct EDGE, ELEMCNT information
 	int          lenAttr[Edge::szAttr] = {1, 1};
-	MPI_Datatype arrType[Edge::szAttr] = {MPI_UNSIGNED, MPI_UNSIGNED, MPI_C_BOOL};
+	MPI_Datatype arrType[Edge::szAttr] = {MPI_UNSIGNED, MPI_UNSIGNED, MPI_CXX_BOOL};
 
 	MPI_Aint     offsets[Edge::szAttr];
 	offsets[0] = offsetof(Edge, src);
@@ -110,6 +110,15 @@ bool DistributionCoordinator::IsendEdge(Edge *buf, int mid, MPI_Request &iReq){
 	return true;
 }
 
+bool DistributionCoordinator::sendEdge(const Edge &iEdge, NodeID dst)
+{
+	Edge tmpEdge = iEdge;
+	commCostDistribute++;
+	eBuf[dst].putNext(tmpEdge);
+
+	return true;
+}
+
 bool DistributionCoordinator::recvEdge(Edge &oEdge)
 {
 	eBuf[0].getNext(oEdge);
@@ -136,12 +145,12 @@ bool DistributionCoordinator::sendCnt(double gCnt, std::unordered_map<VertexID, 
 {
     clock_t begin = clock();
 	MPI_Reduce(&gCnt, nullptr, 1, MPI_DOUBLE, MPI_SUM, MPI_MASTER, MPI_COMM_WORLD);
-    VertexID maxVId;
-    MPI_Bcast(&maxVId, 1, MPI_UNSIGNED, MPI_MASTER, MPI_COMM_WORLD);
+    //VertexID maxVId;
+    //MPI_Bcast(&maxVId, 1, MPI_UNSIGNED, MPI_MASTER, MPI_COMM_WORLD);
     ioCPUTime += double(clock() - begin);
 
 
-    float* lCntArr = new float[maxVId+1];
+    /*float* lCntArr = new float[maxVId+1];
     std::fill_n(lCntArr, maxVId+1, 0.0);
     std::unordered_map<VertexID, float>::const_iterator it;
     for (it = lCnt.begin(); it != lCnt.end(); it++) {
@@ -151,8 +160,9 @@ bool DistributionCoordinator::sendCnt(double gCnt, std::unordered_map<VertexID, 
     begin = clock();
     MPI_Reduce(lCntArr, nullptr, maxVId+1, MPI_FLOAT, MPI_SUM, MPI_MASTER, MPI_COMM_WORLD);
     ioCPUTime += double(clock() - begin);
+    delete lCntArr;*/
 
-    delete lCntArr;
+
     return true;
 
 }
@@ -164,10 +174,10 @@ bool DistributionCoordinator::recvCnt(VertexID maxVId, double &gCnt, std::vector
 	double empty = 0;
     clock_t begin = clock();
 	MPI_Reduce(&empty, &gCnt, 1, MPI_DOUBLE, MPI_SUM, MPI_MASTER, MPI_COMM_WORLD);
-    MPI_Bcast(&maxVId, 1, MPI_UNSIGNED, MPI_MASTER, MPI_COMM_WORLD);
+    //MPI_Bcast(&maxVId, 1, MPI_UNSIGNED, MPI_MASTER, MPI_COMM_WORLD);
     ioCPUTime += double(clock() - begin);
 
-    float* lCntArr = new float[maxVId+1];
+    /*float* lCntArr = new float[maxVId+1];
     std::fill_n(lCntArr, maxVId+1, 0.0);
 
     begin = clock();
@@ -177,7 +187,7 @@ bool DistributionCoordinator::recvCnt(VertexID maxVId, double &gCnt, std::vector
     commCostGather = (maxVId + 1) * (getSzProc()-1);
 
     lCnt.insert(lCnt.end(), &lCntArr[0], &lCntArr[maxVId]);
-    delete lCntArr;
+    delete lCntArr;*/
 
 	return true;
 }
