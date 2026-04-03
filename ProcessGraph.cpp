@@ -521,6 +521,56 @@ void loadFullyDynamicGraphStreamForThinkD(const std::string& file_path, ThinkDFD
     infile.close();
 }
 
+
+void countSquareForThinkDInIncrementalGraphStream(const std::string& file_path, const std::string& output_file, ThinkDFD*& module, Graph*& data_graph, ui interval){
+    
+    std::ifstream infile(file_path);
+    std::ofstream outputfile;
+    outputfile.open(output_file, std::ios::app);
+
+    if (!infile.is_open()) {
+        std::cout << "Can not open the graph file " << file_path << " ." << std::endl;
+        exit(-1);
+    }
+
+    char type;
+    std::string input_line;
+    ui label = 0;
+
+    std::cout << "Reading File............ " << std::endl;
+
+    VertexID begin, end;
+    std::string addition;
+
+    ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+
+    double max_error = 0.0, min_error = 30.0;
+
+    while(infile >> begin) {
+
+        infile >> end;
+
+        module-> processEdgeSquare(begin, end, true);
+
+        interval_counter++;
+
+        if(interval_counter % interval == 0){
+
+            outputfile << interval_counter << "  " << module->getGlobalSquare() << std::endl;
+            outputfile.flush();
+        }        
+    }
+
+
+    infile.close();
+    outputfile.close();
+
+    //write_into_output_file(output_file, exact_count, global_cnt, error_array, serial);
+}
+
+
+
+
 void countSquareForThinkDInFullyDynamicGraphStream(const std::string& file_path, const std::string& output_file, ThinkDFD*& module, Graph*& data_graph, ui interval){
     
     std::ifstream infile(file_path);
