@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <string>
 #include <limits>
+#include <sstream>
 #include "graph.h"
 #include "types.h"
 #include "MatchingCommand.h"
@@ -91,12 +92,21 @@ void countSquareForThinkDInIncrementalGraphStream(const std::string& file_path, 
     std::string addition;
 
     ui approximated_count = 0, interval_counter = 0, trial_counter = 0;
+    ui line_count = 0, comment_line_count = 4;
 
     double max_error = 0.0, min_error = 30.0;
+
+    while (std::getline(infile, input_line)) {
+        line_count++;
+        if(line_count >= comment_line_count){
+            break;
+        }
+    }
 
     while(infile >> begin) {
 
         infile >> end;
+        module-> processEdgeSquare(begin, end, true);
 
         interval_counter++;
 
